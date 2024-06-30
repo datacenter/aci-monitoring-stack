@@ -1,0 +1,18 @@
+{{- $files := .Files.Glob "config.d/*.yaml" }}
+{{- if $files }}
+apiVersion: v1
+kind: ConfigMapList
+items:
+{{- range $path, $fileContents := $files }}
+{{- $configName := regexReplaceAll "(^.*/)(.*)\\.yaml$" $path "${2}" }}
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: {{ printf "%s-aci-exporter-queries-%s" (include "aci-monitoring-stack.name" $) $configName | trunc 63 | trimSuffix "-" }}
+    labels:
+      app: {{ template "aci-monitoring-stack.name" $ }}-aci-exporter
+{{ include "aci-monitoring-stack.labels" $ | indent 6 }}
+  data:
+    {{ $configName }}.yaml: {{ $.Files.Get $path | toYaml | nindent 6}}
+{{- end }}
+{{- end }}

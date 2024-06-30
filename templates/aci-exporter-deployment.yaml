@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aci-monitoring-stack.name" . }}-aci-exporter
+  labels:
+    {{- include "aci-monitoring-stack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: aci-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "aci-monitoring-stack.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: aci-exporter
+        {{- include "aci-monitoring-stack.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.config.port }}
+              protocol: TCP
+          volumeMounts:
+          - name: {{ template "aci-monitoring-stack.name" . }}-aci-exporter-config
+            mountPath: /etc/aci-exporter/config.yaml
+            subPath: config.yaml
+          {{- $files := .Files.Glob "config.d/*.yaml" }}
+          {{- if $files }}
+          {{- range $path, $fileContents := $files }}
+          {{- $configName := regexReplaceAll "(^.*/)(.*)\\.yaml$" $path "${2}" }}
+          - name: {{ printf "%s-aci-exporter-queries-%s" (include "aci-monitoring-stack.name" $) $configName | trunc 63 | trimSuffix "-" }}
+            mountPath: /etc/aci-exporter/config.d/{{ $configName }}.yaml
+            subPath: {{ $configName }}.yaml
+          {{- end }}
+          {{- end }}
+      volumes:
+      - name: {{ template "aci-monitoring-stack.name" . }}-aci-exporter-config
+        configMap:
+          name: {{ template "aci-monitoring-stack.name" . }}-aci-exporter-config
+      {{- $files := .Files.Glob "config.d/*.yaml" }}
+      {{- if $files }}
+      {{- range $path, $fileContents := $files }}
+      {{- $configName := regexReplaceAll "(^.*/)(.*)\\.yaml$" $path "${2}" }}
+      - name: {{ printf "%s-aci-exporter-queries-%s" (include "aci-monitoring-stack.name" $) $configName | trunc 63 | trimSuffix "-" }}
+        configMap:
+          name: {{ printf "%s-aci-exporter-queries-%s" (include "aci-monitoring-stack.name" $) $configName | trunc 63 | trimSuffix "-" }}
+      {{- end }}
+      {{- end }}

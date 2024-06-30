@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.config.url }}
+  labels:
+    {{- include "aci-monitoring-stack.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.config.port }}
+      targetPort: {{ .Values.config.port }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "aci-monitoring-stack.selectorLabels" . | nindent 4 }}

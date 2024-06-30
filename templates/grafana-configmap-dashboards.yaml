@@ -1,0 +1,23 @@
+{{- $files := .Files.Glob "dashboards/*.json" }}
+{{- if $files }}
+apiVersion: v1
+kind: ConfigMapList
+items:
+{{- range $path, $fileContents := $files }}
+{{- $dashboardName := regexReplaceAll "(^.*/)(.*)\\.json$" $path "${2}" }}
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: {{ printf "%s-%s-dashboard" (include "aci-monitoring-stack.name" $) $dashboardName | trunc 63 | trimSuffix "-" }}
+    annotations:
+      k8s-sidecar-target-directory: "ACI"
+    labels:
+      {{- if $.Values.grafana.sidecar.dashboards.label }}
+      {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}      
+      {{- end }}
+      app: {{ template "aci-monitoring-stack.name" $ }}-grafana
+{{ include "aci-monitoring-stack.labels" $ | indent 6 }}
+  data:
+    {{ $dashboardName }}.json: {{ $.Files.Get $path | toJson }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,40 @@
+defaultRules:
+  rules:
+    kubeProxy: false
+    windows: false
+grafana:
+  # Do not run this on the RPis
+  nodeSelector:
+    type: highperf
+  ingress:
+    ingressClassName: "traefik"
+    enabled: true
+    hosts:
+      - grafana.apps.talos-c1.cam.ciscolabs.com
+  persistence:
+    enabled: true
+    size: 2Gi
+kubeProxy:
+  enabled: false
+prometheus:
+  # Do not run this on the RPis
+  ingress:
+    enabled: true
+    ingressClassName: "traefik"
+    hosts:
+      - prometheus.apps.talos-c1.cam.ciscolabs.com
+  prometheusSpec:
+    retentionSize: 26GiB
+    logLevel: debug
+    nodeSelector:
+      type: highperf
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 25Gi
+kubeApiServer:
+  tlsConfig:
+    insecureSkipVerify: true

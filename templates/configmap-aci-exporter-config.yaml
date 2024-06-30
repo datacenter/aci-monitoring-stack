@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "aci-monitoring-stack.name" . }}-aci-exporter-config
+  labels:
+    app: {{ template "aci-monitoring-stack.name" $ }}-aci-exporter
+{{ include "aci-monitoring-stack.labels" $ | indent 4 }}
+data:
+  config.yaml: |-
+    port: {{ $.Values.config.port }}
+    prefix: {{ $.Values.config.prefix }}
+    # Profiles for different fabrics
+    fabrics:
+      {{- range $k, $v := $.Values.config.fabrics }}
+      {{ $k }}:
+        username: {{ $v.username }}
+        password: {{ $v.password | quote }}
+        apic:
+          {{- range $v.apic }}
+          - {{ . }}
+          {{- end }}
+        service_discovery:
+          target_format: "%s#%s"
+          target_fields:
+            - aci_exporter_fabric
+            - {{ $v.service_discovery }}
+      {{- end }}
+    # Http client settings used to access apic
+    httpclient:
+      insecurehttps: {{ $.Values.config.httpclient.insecurehttps }}
+      keepalive: {{ $.Values.config.httpclient.keepalive }}
+      timeout: {{ $.Values.config.httpclient.timeout }}
