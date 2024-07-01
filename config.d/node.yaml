@@ -18,6 +18,12 @@ class_queries:
         unit: "ratio"
         help: "Returns the kernel space cpu load of a fabric node"
         value_calculation: "value / 100"
+      - name: node_cpu_idle
+        value_name: procSysCPU5min.attributes.idleLast
+        type: "gauge"
+        unit: "ratio"
+        help: "Returns the idle cpu of a fabric node"
+        value_calculation: "value / 100"
     labels:
       - property_name: procSysCPU5min.attributes.dn
         regex: "^sys/procsys/CDprocSysCPU5min"
@@ -35,7 +41,12 @@ class_queries:
         value_name: procSysMem5min.attributes.freeLast
         type: "gauge"
         unit: "bytes"
-        help: "Returns the kernel space cpu load of a fabric node"
+        help: "Returns the free memory of a fabric node"
+      - name: node_memory_total
+        value_name: procSysMem5min.attributes.totalLast
+        type: "gauge"
+        unit: "bytes"
+        help: "Returns the total memory of a fabric node"
     labels:
       - property_name: procSysMem5min.attributes.dn
         regex: "^sys/procsys/CDprocSysMem5min"
@@ -51,8 +62,6 @@ class_queries:
       - property_name: eqptTemp5min.attributes.dn
         regex: "^sys/ch/supslot-(?P<supslotid>[1-9][0-9]*)/sup/sensor-(?P<sensorid>[1-9][0-9]*)"
       - property_name: eqptTemp5min.attributes.dn
-        regex: "^sys/extch-(?P<extch>[1-9][0-9]*)/extchslot-(?P<extchslot>[1-9][0-9]*)/extchc/sensor-(?P<sensorid>[1-9][0-9]*)"
-      - property_name: eqptTemp5min.attributes.dn
         regex: "^sys/ch/scslot-(?P<scslot>[1-9][0-9]*)/sc/sensor-(?P<sensorid>[1-9][0-9]*)"
       - property_name: eqptTemp5min.attributes.dn
         regex: "^sys/ch/fcslot-(?P<fcslot>[1-9][0-9]*)/fc/sensor-(?P<sensorid>[1-9][0-9]*)"
@@ -63,24 +72,10 @@ class_queries:
       - property_name: eqptTemp5min.attributes.dn
         regex: "^sys/ch/nslot-(?P<nslot>[1-9][0-9]*)/nic-(?P<nic>[1-9][0-9]*)/sensor-(?P<sensorid>[1-9][0-9]*)"
       - property_name: eqptTemp5min.attributes.dn
-        regex: "^sys/ch/bslot/board/sensor-(?P<sensorid>[1-9][0-9]*)"
+        regex: "^sys/ch/bslot/board/sensor-(?P<board_sensorid>[1-9][0-9]*)"
+      - property_name: eqptTemp5min.attributes.dn
+        regex: "^sys/extch-(?P<extch>[1-9][0-9]*)/extchslot-(?P<extchslot>[1-9][0-9]*)/extchc/sensor-(?P<sensorid>[1-9][0-9]*)"
 
-  node_hw_sensors:
-    class_name: eqptSensor
-    query_parameter: '?query-target-filter=wcard(eqptSensor.dn,"supslot")'
-    metrics:
-      - name: node_hw_sensors
-        value_name: eqptSensor.attributes.value
-        type: "gauge"
-        help: "Returns the temperature by sensor of a fabric node"
-    labels:
-      - property_name: eqptSensor.attributes.dn
-        regex: "^sys/ch/bslot/board/sensor-(?P<sensorid>[1-9][0-9]*)"
-      - property_name: eqptSensor.attributes.descr
-        regex: "^(?P<Device>.*)"
-      - property_name: eqptSensor.attributes.operSt
-        regex: "^(?P<operState>.*)"
-        
   apic_hw_sensors:
     class_name: eqptSensor
     query_parameter: '?query-target-filter=wcard(eqptSensor.dn,"bslot")'
@@ -93,7 +88,7 @@ class_queries:
       - property_name: eqptSensor.attributes.dn
         regex: "^topology/pod-(?P<podid>[1-9][0-9]*)/node-(?P<nodeid>[1-9][0-9]*)/sys/ch/bslot/board/sensor-(?P<sensorid>[1-9][0-9]*)"
       - property_name: eqptSensor.attributes.descr
-        regex: "^(?P<Device>.*)"
+        regex: "^(?P<Desc>.*)"
       - property_name: eqptSensor.attributes.operSt
         regex: "^(?P<operState>.*)"      
 
@@ -115,7 +110,19 @@ class_queries:
         type: gauge
     labels:
       - property_name: eqptFruPower5min.attributes.dn
-        regex: "^sys/ch/(?P<slot>.*[0-9]+)/"
+        regex: "^sys/ch/supslot-(?P<supslotid>[1-9][0-9]*)/sup/sensor-(?P<sensorid>[1-9][0-9]*)"
+      - property_name: eqptFruPower5min.attributes.dn
+        regex: "^sys/ch/scslot-(?P<scslot>[1-9][0-9]*)"
+      - property_name: eqptFruPower5min.attributes.dn
+        regex: "^sys/ch/fcslot-(?P<fcslot>[1-9][0-9]*)"
+      - property_name: eqptFruPower5min.attributes.dn
+        regex: "^sys/ch/lcslot-(?P<lcslot>[1-9][0-9]*)"
+      - property_name: eqptFruPower5min.attributes.dn
+        regex: "^sys/ch/supslot-(?P<supslot>[1-9][0-9]*)"
+      - property_name: eqptFruPower5min.attributes.dn
+        regex: "^sys/ch/ftslot-(?P<ftslot>[1-9][0-9]*)"
+      - property_name: eqptFruPower5min.attributes.dn
+        regex: "^sys/extch-(?P<extch>[1-9][0-9]*)/extchslot-(?P<extchslot>[1-9][0-9]*)"
 
   ps_power_usage:
     class_name: eqptPsPower5min

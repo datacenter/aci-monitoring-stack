@@ -98,9 +98,6 @@ compound_queries:
       - class_name: vnsGraphInst
         label_value: vnsGraphInst
         query_parameter: '?rsp-subtree-include=count'
-      - class_name: fvIP
-        label_value: fvIP
-        query_parameter: '?rsp-subtree-include=count'
       - class_name: eqptLC
         label_value: eqptLC
         query_parameter: '?rsp-subtree-include=count'

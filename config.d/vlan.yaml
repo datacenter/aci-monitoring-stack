@@ -108,20 +108,3 @@ class_queries:
         regex: "^(?P<pcTag>.*)"
       - property_name: vxlanCktEp.children.[l2RsPathDomAtt].attributes.tDn
         regex: "^topology/pod-(?P<podid>[1-9][0-9]*)/node-(?P<nodeid>[1-9][0-9]+)/sys/conng/path-\\[(?P<interface>[^\\]]+)\\]"
-
-  node_vlan_current:
-    class_name: eqptcapacityVlanUsage5min
-    query_parameter: '?order-by=eqptcapacityVlanUsage5min.dn'
-    metrics:
-      - name: node_vlan_cum
-        value_name: eqptcapacityVlanUsage5min.attributes.totalCum
-        type: "gauge"
-      - name: node_vlan_base
-        value_name: eqptcapacityVlanUsage5min.attributes.totalBase
-        type: "gauge"
-      - name: node_vlan_capacity_cum
-        value_name: eqptcapacityVlanUsage5min.attributes.totalCapCum
-        type: "gauge"
-      - name: node_vlan_capacity_base
-        value_name: eqptcapacityVlanUsage5min.attributes.totalCapBase
-        type: "gauge"

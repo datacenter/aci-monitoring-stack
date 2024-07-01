@@ -1247,7 +1247,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "count(aci_fabric_node_info{role=\"controller\",fabric=~\"$fabric\"})",
+          "expr": "sum(aci_nodes{type=\"controller\",fabric=~\"$fabric\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "controller",
@@ -1261,7 +1261,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "count(aci_fabric_node_info{role=\"leaf\",fabric=~\"$fabric\"})",
+          "expr": "sum(aci_nodes{type=\"leaf\",fabric=~\"$fabric\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "Leaf",
@@ -1275,7 +1275,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(aci_fabric_node_info{role=\"spine\",fabric=~\"$fabric\"})",
+          "expr": "sum(aci_nodes{type=\"spine\",fabric=~\"$fabric\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "Spine",
@@ -1393,9 +1393,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "selected": true,
+          "text": "fab1",
+          "value": "fab1"
         },
         "datasource": {
           "type": "prometheus",

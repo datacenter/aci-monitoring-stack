@@ -51,9 +51,9 @@ prometheus:
               # List of the queries to execute on the fabric level. They need to match the aci-exporter config
               # DO NOT INSERT SPACES and use \ for next line or aci-exporter will not be able to parse the queries
             queries:
-              - "health,fabric_node_info,fabric_node_info,max_capacity,\
-                vlans,static_binding_info,dynamic_binding_info,\
-                epg_port_vlan_binding,epg_port_vxlan_binding,\
+              - "health,fabric_node_info,max_capacity,\
+                vlans,static_binding_info,dynamic_binding_info,node_count,\
+                epg_port_vlan_binding,epg_port_vxlan_binding,object_count,\
                 ps_power_usage,apic_hw_sensors,uptime_topsystem"
           scheme: http
           http_sd_configs:
@@ -84,14 +84,12 @@ prometheus:
             queries:
               - "node_bgp_peers,node_bgp_peers_af,node_interface_info,\
                 node_interface_rx_stats,node_interface_rx_err_stats,\
-                node_interface_tx_stats,node_interface_tx_err_stats,\
-                node_cpu,node_memory,node_hw_sensors,\
+                node_interface_tx_stats,node_interface_tx_err_stats,node_cpu,node_memory,\
                 node_scale_profiles,node_active_scale_profile,node_tcam_current,\
                 node_labels_current,node_mac_current,node_ipv4_current,\
                 node_ipv6_current,node_mcast_current,node_vlan_current,\
                 node_lpm_current,node_slash32_current,node_slash128_current,\
-                node_scale_ctx,node_ospf_neighbors,node_cpu,node_memory,\
-                node_fru_power_usage,node_temperature"
+                node_scale_ctx,node_ospf_neighbors,node_fru_power_usage,node_temperature"
           scheme: http
           http_sd_configs:
             - url:  *aci-sd-url
