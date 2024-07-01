@@ -222,7 +222,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "aci_node_memory_used_bytes{fabric=~\"$fabric\",nodeid=~\"$nodeid\"} / (aci_node_memory_used_bytes{fabric=~\"$fabric\",nodeid=~\"$nodeid\"}  + aci_node_memory_free_bytes{fabric=~\"$fabric\",nodeid=~\"$nodeid\"})",
+          "expr": "aci_node_memory_used_bytes{fabric=~\"$fabric\",nodeid=~\"$nodeid\"} / aci_node_memory_total_bytes{fabric=~\"$fabric\",nodeid=~\"$nodeid\"}",
           "interval": "",
           "legendFormat": "{{fabric}} - {{nodeid}}",
           "range": true,

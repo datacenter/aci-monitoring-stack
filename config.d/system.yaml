@@ -59,8 +59,9 @@ class_queries:
 
   max_capacity:
     class_name: fvcapRule
-    # Additional query parameters for the class query, must start with ? and be separated by &
-    query_parameter: '?query-target-filter=ne(fvcapRule.userConstraint,"feature-unavailable")'
+    # fvcapRule filtering seems to be broken... so we need to filter the results in 
+    # the exporter itself, I only care about fabric wide metrics so no node-id
+    #query_parameter: '?query-target-filter=wcard(fvcapRule.dn,"^uni/.*")'
     metrics:
       - name: max_capacity
         value_name: fvcapRule.attributes.constraint
@@ -69,6 +70,29 @@ class_queries:
     labels:
       - property_name: fvcapRule.attributes.subj
         regex: "^(?P<class>.*)"
+      - property_name: fvcapRule.attributes.dn
+        regex: "^topology/pod-(?P<podid>[1-9][0-9]*)/node-(?P<nodeid>[1-9][0-9]*)"
+      - property_name: fvcapRule.attributes.dn
+        # This is used as a workaround so I can set the nodeid == fabric to detect fabric wide metrics
+        regex: "^uni/(?P<nodeid>.*)/compcat-default"
+
+  max_global_pctags:
+    class_name: fvcapNSRule
+    # fvcapNSRule filtering seems to be broken... so we need to filter the results in 
+    # the exporter itself, I only care about fabric wide metrics so no node-id
+    #query_parameter: '?query-target-filter=wcard(fvcapNSRule.dn,"^uni/.*")'
+    metrics:
+      - name: max_global_pctag
+        value_name: fvcapNSRule.attributes.constraint
+        type: gauge
+        help: Returns the used capacity for global pctag
+    labels:
+      - property_name: fvcapNSRule.attributes.dn
+        regex: "^topology/pod-(?P<podid>[1-9][0-9]*)/node-(?P<nodeid>[1-9][0-9]*)"
+      - property_name: fvcapNSRule.attributes.dn
+        # This is used as a workaround so I can set the nodeid == fabric to detect fabric wide metrics
+        regex: "^uni/(?P<nodeid>.*)/compcat-default"
+
 
 compound_queries:
   object_count:
@@ -80,11 +104,18 @@ compound_queries:
       - class_name: fvCEp
         label_value: fvCEp
         query_parameter: '?rsp-subtree-include=count'
-      - class_name: fvCEp
-        label_value: fvCEpIp
-        query_parameter: '?rsp-subtree-include=required,count&rsp-subtree-class=fvIp&rsp-subtree=children'
+      - class_name: fvIp
+        label_value: fvIp
+        query_parameter: '?rsp-subtree-include=count'
       - class_name: fvAEPg
         label_value: fvAEPg
+        query_parameter: '?rsp-subtree-include=count'
+        #This counts both ESGs and EPGs and is useful to calculate the numbner of global PCtags
+      - class_name: fvEPg
+        label_value: fvEPg_Global
+        query_parameter: '?rsp-subtree-include=count&query-target-filter=lt(fvEPg.pcTag,"16384")'
+      - class_name: fvESg
+        label_value: fvESg
         query_parameter: '?rsp-subtree-include=count'
       - class_name: fvBD
         label_value: fvBD
@@ -101,6 +132,9 @@ compound_queries:
       - class_name: eqptLC
         label_value: eqptLC
         query_parameter: '?rsp-subtree-include=count'
+      - class_name: coopEpRec
+        label_value: coopRemoteEp
+        query_parameter: '?rsp-subtree-include=count&query-target-filter=or(eq(coopEpRec.remoteType,"msite"),eq(coopEpRec.remoteType,"ext_fab"))'
     labelname: class
     metrics:
       - name: object_instances

@@ -51,7 +51,7 @@ prometheus:
               # List of the queries to execute on the fabric level. They need to match the aci-exporter config
               # DO NOT INSERT SPACES and use \ for next line or aci-exporter will not be able to parse the queries
             queries:
-              - "health,fabric_node_info,max_capacity,\
+              - "health,fabric_node_info,max_capacity,max_global_pctags,\
                 vlans,static_binding_info,dynamic_binding_info,node_count,\
                 epg_port_vlan_binding,epg_port_vxlan_binding,object_count,\
                 ps_power_usage,apic_hw_sensors,uptime_topsystem"
