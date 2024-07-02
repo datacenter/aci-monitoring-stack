@@ -44,8 +44,8 @@ prometheus:
             - targets:
               - localhost:9090
         - job_name: aci-exporter-sd-apics
-          scrape_interval: 1m
-          scrape_timeout: 30s
+          scrape_interval: 5m
+          scrape_timeout: 5m
           metrics_path: /probe
           params:
               # List of the queries to execute on the fabric level. They need to match the aci-exporter config
@@ -135,6 +135,7 @@ prometheus:
               target_label: role
             - source_labels: [ __meta_name ]
               target_label: name   
+
   service:
     servicePort: 80
   alertmanager:
