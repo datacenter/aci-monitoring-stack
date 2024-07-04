@@ -379,7 +379,7 @@
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "definition": "query_result(aci_fabric_node_info{fabric=~\"$fabric\",role!=\"controller\"})",
+        "definition": "query_result(aci_uptime_seconds_total{fabric=~\"$fabric\",role!=\"controller\"})",
         "hide": 0,
         "includeAll": true,
         "label": "Nodeid",
@@ -387,7 +387,7 @@
         "name": "nodeid",
         "options": [],
         "query": {
-          "query": "query_result(aci_fabric_node_info{fabric=~\"$fabric\",role!=\"controller\"})",
+          "query": "query_result(aci_uptime_seconds_total{fabric=~\"$fabric\",role!=\"controller\"})",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,

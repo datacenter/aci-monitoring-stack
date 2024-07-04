@@ -31,6 +31,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "Limited to 50 interfaces",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -112,7 +113,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aci_interface_oper_state{fabric=~\"$fabric\", nodeid=~\"$nodeid\"} == 2",
+          "expr": "topk(50, aci_interface_oper_state{fabric=~\"$fabric\", nodeid=~\"$nodeid\"} == 2)",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -128,7 +129,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aci_interface_oper_state{fabric=~\"$fabric\", nodeid=~\"$nodeid\"} == 1",
+          "expr": "topk(50, aci_interface_oper_state{fabric=~\"$fabric\", nodeid=~\"$nodeid\"} == 1)",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -349,9 +350,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "selected": true,
+          "text": "fab1",
+          "value": "fab1"
         },
         "datasource": {
           "type": "prometheus",
@@ -387,7 +388,7 @@
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "definition": "query_result(aci_fabric_node_info{fabric=~\"$fabric\",role!=\"controller\"})",
+        "definition": "query_result(aci_uptime_seconds_total{fabric=~\"$fabric\",role!=\"controller\"})",
         "hide": 0,
         "includeAll": true,
         "label": "Nodeid",
@@ -395,7 +396,7 @@
         "name": "nodeid",
         "options": [],
         "query": {
-          "query": "query_result(aci_fabric_node_info{fabric=~\"$fabric\",role!=\"controller\"})",
+          "query": "query_result(aci_uptime_seconds_total{fabric=~\"$fabric\",role!=\"controller\"})",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,

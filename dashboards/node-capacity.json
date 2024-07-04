@@ -1336,7 +1336,7 @@
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "definition": "query_result(aci_fabric_node_info{fabric=~\"$fabric\"})",
+        "definition": "query_result(aci_uptime_seconds_total{fabric=~\"$fabric\"})",
         "hide": 0,
         "includeAll": true,
         "label": "Nodeid",
@@ -1344,7 +1344,7 @@
         "name": "nodeid",
         "options": [],
         "query": {
-          "query": "query_result(aci_fabric_node_info{fabric=~\"$fabric\"})",
+          "query": "query_result(aci_uptime_seconds_total{fabric=~\"$fabric\"})",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
