@@ -77,7 +77,7 @@
         "frameIndex": 3,
         "showHeader": true
       },
-      "pluginVersion": "11.0.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -186,7 +186,7 @@
         "frameIndex": 3,
         "showHeader": true
       },
-      "pluginVersion": "11.0.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {

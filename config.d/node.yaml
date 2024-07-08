@@ -368,3 +368,48 @@ class_queries:
     labels:
       - property_name: ctxClassCnt.attributes.name
         regex: "^(?P<class>.*)"
+
+  controller_topsystem:
+    class_name: topSystem
+    query_parameter: '?query-target-filter=eq(topSystem.role,"controller")'
+    metrics:
+      - name: apic_uptime
+        type: counter
+        unit: seconds
+        help: The uptime since boot
+        value_name: topSystem.attributes.systemUpTime
+        value_regex_transformation: "([0-9].*):([0-2][0-9]):([0-6][0-9]):([0-6][0-9])\\..*"
+        value_calculation: "value1 * 86400 + value2 * 3600 + value3 * 60 + value4"
+      - name: inventory
+        type: gauge
+        help: Apic ID To Fabric
+        value_name: topSystem.attributes.id    
+    labels:
+      - property_name: topSystem.attributes.state
+        regex: "^(?P<state>.*)"
+      - property_name: topSystem.attributes.name
+        regex: "^(?P<name>.*)"
+      - property_name: topSystem.attributes.role
+        regex: "^(?P<role>.*)"
+      - property_name: topSystem.attributes.id
+        regex: "^(?P<nodeid>.*)"
+      - property_name: topSystem.attributes.podId
+        regex: "^(?P<podid>.*)"
+
+  node_topsystem:
+    class_name: topSystem
+    metrics:
+      - name: uptime
+        type: counter
+        unit: seconds
+        help: The uptime since boot
+        value_name: topSystem.attributes.systemUpTime
+        value_regex_transformation: "([0-9].*):([0-2][0-9]):([0-6][0-9]):([0-6][0-9])\\..*"
+        value_calculation: "value1 * 86400 + value2 * 3600 + value3 * 60 + value4"
+      - name: inventory
+        type: gauge
+        help: Switch ID To Fabric
+        value_name: topSystem.attributes.id
+    labels:
+      - property_name: topSystem.attributes.state
+        regex: "^(?P<state>.*)"

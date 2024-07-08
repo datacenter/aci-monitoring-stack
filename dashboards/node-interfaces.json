@@ -23,6 +23,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 26,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -93,6 +94,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -104,7 +106,7 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "11.0.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -343,30 +345,29 @@
   "refresh": "",
   "revision": 1,
   "schemaVersion": 39,
-  "tags": [
-    "cisco-aci"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": true,
-          "text": "fab1",
-          "value": "fab1"
+          "selected": false,
+          "text": "scale2-fabric",
+          "value": "scale2-fabric"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "definition": "label_values(fabric)",
-        "hide": 0,
+        "definition": "label_values(aci_uptime_seconds_total,fabric)",
+        "hide": 1,
         "includeAll": true,
         "label": "Fabric",
-        "multi": false,
+        "multi": true,
         "name": "fabric",
         "options": [],
         "query": {
-          "query": "label_values(fabric)",
+          "qryType": 1,
+          "query": "label_values(aci_uptime_seconds_total,fabric)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
@@ -380,33 +381,35 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": {
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "definition": "query_result(aci_uptime_seconds_total{fabric=~\"$fabric\",role!=\"controller\"})",
-        "hide": 0,
+        "definition": "label_values(aci_uptime_seconds_total{fabric=\"$fabric\", role!=\"controller\"},nodeid)",
+        "hide": 1,
         "includeAll": true,
         "label": "Nodeid",
-        "multi": false,
+        "multi": true,
         "name": "nodeid",
         "options": [],
         "query": {
-          "query": "query_result(aci_uptime_seconds_total{fabric=~\"$fabric\",role!=\"controller\"})",
+          "qryType": 1,
+          "query": "label_values(aci_uptime_seconds_total{fabric=\"$fabric\", role!=\"controller\"},nodeid)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
-        "regex": "/nodeid=\"(.*?)\"/",
+        "regex": "",
         "skipUrlSync": false,
-        "sort": 3,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "sort": 0,
+        "type": "query"
       },
       {
         "current": {
@@ -446,7 +449,6 @@
     "from": "now-30m",
     "to": "now"
   },
-  "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {
     "refresh_intervals": [
       "10s",
@@ -462,7 +464,7 @@
   },
   "timezone": "",
   "title": "Nodes Interfaces",
-  "uid": "f8fcf6a0-2c46-42cb-a41f-689e6865ce3f",
+  "uid": "bdr3bac9sq2o0c",
   "version": 1,
   "weekStart": ""
 }

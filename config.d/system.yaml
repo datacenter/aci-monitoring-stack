@@ -36,27 +36,6 @@ class_queries:
       - property_name: fabricNode.attributes.dn
         regex: "^topology/pod-(?P<podid>[1-9][0-9]*)/node-(?P<nodeid>[1-9][0-9]*)"
 
-  uptime_topsystem:
-    class_name: topSystem
-    query_parameter: "?rsp-subtree-include=health"
-    metrics:
-      - name: uptime
-        type: counter
-        unit: seconds
-        help: The uptime since boot
-        value_name: topSystem.attributes.systemUpTime
-        value_regex_transformation: "([0-9].*):([0-2][0-9]):([0-6][0-9]):([0-6][0-9])\\..*"
-        value_calculation: "value1 * 86400 + value2 * 3600 + value3 * 60 + value4"
-    labels:
-      - property_name: topSystem.attributes.dn
-        regex: "^topology/pod-(?P<podid>[1-9][0-9]*)/node-(?P<nodeid>[1-9][0-9]*)/sys"
-      - property_name: topSystem.attributes.state
-        regex: "^(?P<state>.*)"
-      - property_name: topSystem.attributes.name
-        regex: "^(?P<name>.*)"
-      - property_name: topSystem.attributes.role
-        regex: "^(?P<role>.*)"
-
   max_capacity:
     class_name: fvcapRule
     # fvcapRule filtering seems to be broken... so we need to filter the results in 

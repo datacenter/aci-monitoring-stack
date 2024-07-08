@@ -24,7 +24,6 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 11,
     "links": [],
     "liveNow": false,
     "panels": [
@@ -75,7 +74,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {
@@ -179,7 +178,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {
@@ -254,7 +253,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {
@@ -332,7 +331,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {
@@ -409,7 +408,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {
@@ -486,7 +485,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {
@@ -562,7 +561,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {
@@ -641,7 +640,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {
@@ -719,7 +718,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {
@@ -797,7 +796,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {
@@ -875,7 +874,7 @@
           "textMode": "auto",
           "wideLayout": true
         },
-        "pluginVersion": "11.0.0",
+        "pluginVersion": "11.1.0",
         "targets": [
           {
             "datasource": {

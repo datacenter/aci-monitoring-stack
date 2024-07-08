@@ -85,7 +85,6 @@
         "x": 0,
         "y": 0
       },
-      "id": 2,
       "options": {
         "legend": {
           "calcs": [],
@@ -126,7 +125,6 @@
         "x": 0,
         "y": 7
       },
-      "id": 1,
       "options": {
         "dedupStrategy": "none",
         "enableLogDetails": true,

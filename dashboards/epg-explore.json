@@ -62,7 +62,6 @@
         "x": 0,
         "y": 0
       },
-      "id": 1,
       "options": {
         "cellHeight": "sm",
         "footer": {
@@ -76,7 +75,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "11.0.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
