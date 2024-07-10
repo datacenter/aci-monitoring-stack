@@ -30,10 +30,10 @@ dependencies:
   version: "6.6.5"
   repository: "https://grafana.github.io/helm-charts"
   condition: loki.enabled
-- name: "promtail"
-  condition: promtail.enabled
-  repository: "https://grafana.github.io/helm-charts"
-  version: "6.16.3"
+#- name: "promtail"
+#  condition: promtail.enabled
+#  repository: "https://grafana.github.io/helm-charts"
+#  version: "6.16.3"
 - name: "grafana"
   condition: grafana.enabled
   repository: "https://grafana.github.io/helm-charts"

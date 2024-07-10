@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "aci-monitoring-stack.name" . }}-aci-exporter-config
+  name: {{ .Release.Name }}-aci-exporter-config
   labels:
     app: {{ .Release.Name }}-aci-exporter
 {{ include "aci-monitoring-stack.labels" $ | indent 4 }}

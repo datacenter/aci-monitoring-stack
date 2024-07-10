@@ -1,19 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "aci-monitoring-stack.name" . }}-aci-exporter
+  name: {{ $.Release.Name }}-aci-exporter
   labels:
-    {{- include "aci-monitoring-stack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: aci-exporter
+    app.kubernetes.io/component: {{ $.Release.Name }}-aci-exporter
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "aci-monitoring-stack.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: {{ $.Release.Name }}-aci-exporter
   template:
     metadata:
       labels:
-        app.kubernetes.io/component: aci-exporter
+        app.kubernetes.io/component: {{ $.Release.Name }}-aci-exporter
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -23,7 +22,7 @@ spec:
             - containerPort: {{ .Values.config.port }}
               protocol: TCP
           volumeMounts:
-          - name: {{ template "aci-monitoring-stack.name" . }}-aci-exporter-config
+          - name: {{ $.Release.Name }}-aci-exporter-config
             mountPath: /etc/aci-exporter/config.yaml
             subPath: config.yaml
           {{- $files := .Files.Glob "config.d/*.yaml" }}
@@ -36,9 +35,9 @@ spec:
           {{- end }}
           {{- end }}
       volumes:
-      - name: {{ template "aci-monitoring-stack.name" . }}-aci-exporter-config
+      - name: {{ $.Release.Name }}-aci-exporter-config
         configMap:
-          name: {{ template "aci-monitoring-stack.name" . }}-aci-exporter-config
+          name: {{ $.Release.Name }}-aci-exporter-config
       {{- $files := .Files.Glob "config.d/*.yaml" }}
       {{- if $files }}
       {{- range $path, $fileContents := $files }}

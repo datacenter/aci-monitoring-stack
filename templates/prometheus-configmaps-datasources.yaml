@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "aci-monitoring-stack.name" . }}-prom-datasource
+  name: {{ .Release.Name }}-prom-datasource
   namespace: {{ .Release.Namespace }}
 {{- if .Values.grafana.sidecar.datasources.annotations }}
   annotations:

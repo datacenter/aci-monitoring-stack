@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "aci-monitoring-stack.name" . }}-loki-datasource
+  name: {{ .Release.Name }}-loki-datasource
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "aci-monitoring-stack.name" . }}
+    app: {{ .Release.Name }}
     chart: {{ template "aci-monitoring-stack.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
