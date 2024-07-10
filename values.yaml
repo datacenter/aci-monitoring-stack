@@ -5,7 +5,8 @@ image:
 config:
   port: 9643
   url: aci-exporter-svc
-
+  fabrics: {}
+  
   # Helm can't use variables in a Value file so naming the service 
   # Dynamically (i.e. including the release name) will break the prometheus sub-chart
   # The easiest solution (and the only one I found that does not involves patching the prom sub-chart)
@@ -14,7 +15,7 @@ config:
   # Sadly acnhors don't support string concatenation so we have to ensure the aci-sd-url matches the config.port and config.url
   # You  need to change this ONLY if you want to deploy this chart multiple times in the same namespace to avoid 
   # having duplicate service name in the same NS.
-  aciServiceDiscoveryURL: http://aci-exporter-svc:9643/sd
+  aciServiceDiscoveryURL: ""
   prefix: aci_
   httpclient:
     insecurehttps: true
