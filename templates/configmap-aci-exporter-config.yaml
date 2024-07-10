@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "aci-monitoring-stack.name" . }}-aci-exporter-config
   labels:
-    app: {{ template "aci-monitoring-stack.name" $ }}-aci-exporter
+    app: {{ .Release.Name }}-aci-exporter
 {{ include "aci-monitoring-stack.labels" $ | indent 4 }}
 data:
   config.yaml: |-

@@ -40,7 +40,7 @@ spec:
           {{- if $files }}
           {{- range $path, $fileContents := $files }}
           {{- $configName := regexReplaceAll "(^.*/)(.*)\\.yaml$" $path "${2}" }}
-          - name: {{ printf "%s-aci-exporter-queries-%s" (include "aci-monitoring-stack.name" $) $configName | trunc 63 | trimSuffix "-" }}
+          - name: {{ printf "%s-aci-exporter-queries-%s" $.Release.Name $configName | trunc 63 | trimSuffix "-" }}
             mountPath: /etc/aci-exporter/config.d/{{ $configName }}.yaml
             subPath: {{ $configName }}.yaml
           {{- end }}
@@ -53,8 +53,8 @@ spec:
       {{- if $files }}
       {{- range $path, $fileContents := $files }}
       {{- $configName := regexReplaceAll "(^.*/)(.*)\\.yaml$" $path "${2}" }}
-      - name: {{ printf "%s-aci-exporter-queries-%s" (include "aci-monitoring-stack.name" $) $configName | trunc 63 | trimSuffix "-" }}
+      - name: {{ printf "%s-aci-exporter-queries-%s" $.Release.Name $configName | trunc 63 | trimSuffix "-" }}
         configMap:
-          name: {{ printf "%s-aci-exporter-queries-%s" (include "aci-monitoring-stack.name" $) $configName | trunc 63 | trimSuffix "-" }}
+          name: {{ printf "%s-aci-exporter-queries-%s" $.Release.Name $configName | trunc 63 | trimSuffix "-" }}
       {{- end }}
       {{- end }}

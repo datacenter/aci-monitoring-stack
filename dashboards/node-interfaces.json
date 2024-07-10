@@ -345,7 +345,9 @@
   "refresh": "",
   "revision": 1,
   "schemaVersion": 39,
-  "tags": [],
+  "tags": [
+    "cisco-aci"
+  ],
   "templating": {
     "list": [
       {

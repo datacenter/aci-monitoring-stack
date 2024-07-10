@@ -1,4 +1,4 @@
-{{- $files := .Files.Glob "alerts/*.json" }}
+{{- $files := .Files.Glob "loki-alerts/*.json" }}
 {{- if $files }}
 apiVersion: v1
 kind: ConfigMapList
@@ -8,12 +8,12 @@ items:
 - apiVersion: v1
   kind: ConfigMap
   metadata:
-    name: {{ printf "%s-%s-alert" (include "aci-monitoring-stack.name" $) $dashboardName | trunc 63 | trimSuffix "-" }}
+    name: {{ printf "%s-%s-alert" .Release.Name $dashboardName | trunc 63 | trimSuffix "-" }}
     labels:
       {{- if $.Values.grafana.sidecar.alerts.label }}
       {{ index $.Values.grafana.sidecar.alerts.label }}: {{ $.Values.grafana.sidecar.alerts.labelValue | quote }}      
       {{- end }}
-      app: {{ template "aci-monitoring-stack.name" $ }}-grafana
+      app: {{ .Release.Name }}-grafana
 {{ include "aci-monitoring-stack.labels" $ | indent 6 }}
   data:
     {{ $dashboardName }}.json: {{ $.Files.Get $path | toJson }}

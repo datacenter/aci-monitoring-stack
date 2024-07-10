@@ -1,0 +1,23 @@
+{{- $files := .Files.Glob "alerts/loki/*.yaml" }}
+{{- if $files }}
+apiVersion: v1
+kind: ConfigMapList
+items:
+{{- range $path, $fileContents := $files }}
+{{- $dashboardName := regexReplaceAll "(^.*/)(.*)\\.yaml$" $path "${2}" }}
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: {{ printf "%s-%s-alert" $.Release.Name $dashboardName | trunc 63 | trimSuffix "-" }}
+    annotations:
+      k8s-sidecar-target-directory: "fake"
+    labels:
+      {{- if $.Values.loki.loki.sidecar.rules.enabled }}
+      {{ index $.Values.loki.loki.sidecar.rules.label }}: {{ $.Values.loki.loki.sidecar.rules.labelValue | quote }}      
+      {{- end }}
+      app: {{ $.Release.Name }}-grafana
+{{ include "aci-monitoring-stack.labels" $ | indent 6 }}
+  data:
+    {{ $dashboardName }}.yaml: {{ $.Files.Get $path | toYaml | indent 4 }}
+{{- end }}
+{{- end }}

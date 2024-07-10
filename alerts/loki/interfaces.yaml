@@ -1,0 +1,34 @@
+groups:
+  - name: Interfaces
+    rules:
+      - alert: Fabric Interface Down
+        expr: |
+          sum(count_over_time({job="aci-monitoring-stack"} |= `[F1394]` | regexp `.+phys-\[(?P<interface>[^\]]+)\]/` [1m])) by (name,interface) > 1
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Fabric Interface `{{ $labels.interface }}` on node `{{ $labels.name }}` Went Down
+      - alert: EPG Interface Down
+        expr: |
+          sum(count_over_time({job="aci-monitoring-stack"} |= `[F0532]` | regexp `.+phys-\[(?P<interface>[^\]]+)\]/` [1m])) by (name,interface) > 1
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: EPG Interface `{{ $labels.interface }}` on node `{{ $labels.name }}` Went Down
+      - alert: Interface Up
+        expr: |
+          sum(count_over_time({job="aci-monitoring-stack"} |= `[E4205125]` | regexp `.+phys-\[(?P<interface>[^\]]+)\]/` [1m])) by (name,interface) > 1
+        for: 0m
+        labels:
+          severity: info
+        annotations:
+          summary: Interface `{{ $labels.interface }}` on node `{{ $labels.name }}` Went Up
+      - record: interfaces:down:count1m
+        expr: |
+          sum(
+            count_over_time({job="aci-monitoring-stack"} |= `[F1394]`[1m])
+          )
+        labels:
+          test: "record"

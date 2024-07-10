@@ -8,9 +8,9 @@ items:
 - apiVersion: v1
   kind: ConfigMap
   metadata:
-    name: {{ printf "%s-aci-exporter-queries-%s" (include "aci-monitoring-stack.name" $) $configName | trunc 63 | trimSuffix "-" }}
+    name: {{ printf "%s-aci-exporter-queries-%s" $.Release.Name $configName | trunc 63 | trimSuffix "-" }}
     labels:
-      app: {{ template "aci-monitoring-stack.name" $ }}-aci-exporter
+      app: {{ $.Release.Name }}-aci-exporter
 {{ include "aci-monitoring-stack.labels" $ | indent 6 }}
   data:
     {{ $configName }}.yaml: {{ $.Files.Get $path | toYaml | nindent 6}}
