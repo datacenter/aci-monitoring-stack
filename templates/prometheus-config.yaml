@@ -7,6 +7,10 @@ metadata:
 {{ include "aci-monitoring-stack.labels" $ | indent 4 }}
 data:
   prometheus.yml: |-
+    global:
+      evaluation_interval: 1m
+      scrape_interval: 1m
+      scrape_timeout: 10s
     rule_files:
       - /etc/alerts.d/prometheus-alerts.yaml
     scrape_configs:
@@ -110,3 +114,23 @@ data:
             target_label: name   
       {{- end }}
       {{- end }}
+    alerting:
+      alertmanagers:
+      - kubernetes_sd_configs:
+          - role: pod
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_namespace]
+          regex: aci-mon-stack
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
+          regex: aci-mon-stack
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+          regex: alertmanager
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_container_port_number]
+          regex: "9093"
+          action: keep

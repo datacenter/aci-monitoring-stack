@@ -3,7 +3,7 @@ groups:
     rules:
       - alert: Fabric Interface Down
         expr: |
-          (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= "[F1394]" | regexp ".+phys-\\[(?P<interface>[^\\]]+)\\]/"[1m])) > 1)
+          (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= `[F1394][soaking]` |= `[sys/phys-` | regexp ".+phys-\\[(?P<interface>[^\\]]+)\\]/"[1m])) > 1)
         for: 0m
         labels:
           severity: warning
@@ -11,24 +11,38 @@ groups:
           summary: Fabric Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Down
       - alert: EPG Interface Down
         expr: |
-          (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= "[F0532]" | regexp ".+phys-\\[(?P<interface>[^\\]]+)\\]/"[1m])) > 1)
+          (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= `[F0532][soaking]` |= `[sys/phys-` | regexp ".+phys-\\[(?P<interface>[^\\]]+)\\]/"[1m])) > 1)
         for: 0m
         labels:
           severity: warning
         annotations:
           summary: EPG Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Down
+      - alert: vPC Down
+        expr: |
+          (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= `[F1296][soaking]` | regexp ".+vPC (?P<interface>.+) is"[1m])) > 1)
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: EPG Port-Channel `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Down
       - alert: Interface Up
         expr: |
-          (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= "[E4205125]" | regexp ".+phys-\\[(?P<interface>[^\\]]+)\\]/"[1m])) > 1)
+          (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= "[E4205125]" |= `[sys/phys-` | regexp ".+phys-\\[(?P<interface>[^\\]]+)\\]/"[1m])) > 1)
         for: 0m
         labels:
           severity: info
         annotations:
           summary: Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Up
-      - record: interfaces:down:count1m
+      - alert: vPC Up
         expr: |
-          sum(
-            count_over_time({job="aci-monitoring-stack"} |= `[F1394]`[1m])
-          )
+          (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= `[E4205113]` | regexp ".+vPC (?P<interface>.+) is"[1m])) > 1)
+        for: 0m
+        labels:
+          severity: info
+        annotations:
+          summary: Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Up
+      - record: aci_interfaces_down_count1m
+        expr: |
+          (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= `[F1394][soaking]` or `[F0532][soaking]` [1m])))
         labels:
           test: "record"
