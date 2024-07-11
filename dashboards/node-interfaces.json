@@ -23,7 +23,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 26,
+  "id": 8,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -352,9 +352,13 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "scale2-fabric",
-          "value": "scale2-fabric"
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": {
           "type": "prometheus",
@@ -395,7 +399,7 @@
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "definition": "label_values(aci_uptime_seconds_total{fabric=\"$fabric\", role!=\"controller\"},nodeid)",
+        "definition": "label_values(aci_uptime_seconds_total{fabric=~\"$fabric\", role!=\"controller\"},nodeid)",
         "hide": 1,
         "includeAll": true,
         "label": "Nodeid",
@@ -404,7 +408,7 @@
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(aci_uptime_seconds_total{fabric=\"$fabric\", role!=\"controller\"},nodeid)",
+          "query": "label_values(aci_uptime_seconds_total{fabric=~\"$fabric\", role!=\"controller\"},nodeid)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,

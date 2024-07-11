@@ -28,7 +28,7 @@ class_queries:
 
   static_binding_info:
     class_name: fvAEPg
-    query_parameter: "?rsp-subtree-include=required&rsp-subtree-class=fvRsPathAtt&rsp-subtree=children"
+    query_parameter: "?rsp-subtree-include=required&rsp-subtree-class=fvRsPathAtt&rsp-subtree=children&order-by=fvAEPg.dn"
     metrics:
       - name: static_binding
         value_name: fvAEPg.children.[fvRsPathAtt].attributes.encap

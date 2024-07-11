@@ -1,6 +1,6 @@
 image:
   repository: quay.io/camillo/aci-exporter
-  tag: 58_newAciConnection_fix
+  tag: 58_node_login_pagination
   pullPolicy: Always
 config:
   port: 9643

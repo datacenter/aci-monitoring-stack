@@ -38,6 +38,7 @@ class_queries:
 
   max_capacity:
     class_name: fvcapRule
+    query_parameter: '?order-by=fvcapRule.dn'
     # fvcapRule filtering seems to be broken... so we need to filter the results in 
     # the exporter itself, I only care about fabric wide metrics so no node-id
     #query_parameter: '?query-target-filter=wcard(fvcapRule.dn,"^uni/.*")'
@@ -57,6 +58,7 @@ class_queries:
 
   max_global_pctags:
     class_name: fvcapNSRule
+    query_parameter: '?order-by=fvcapNSRule.dn'
     # fvcapNSRule filtering seems to be broken... so we need to filter the results in 
     # the exporter itself, I only care about fabric wide metrics so no node-id
     #query_parameter: '?query-target-filter=wcard(fvcapNSRule.dn,"^uni/.*")'
