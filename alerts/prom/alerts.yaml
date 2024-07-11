@@ -3,6 +3,8 @@ groups:
     rules:
       - alert: BGP Received Path high churn detected
         expr: abs(deriv(aci_bgp_peer_prefix_received{address_family=~"ipv4-ucast|ipv6-ucast"}[2m])) > 0.2
+        labels:
+          severity: warning
         annotations:
           description: 'BGP Received Path high churn detected: Fabric: {{ $labels.fabric }}, Node: {{ $labels.nodeid }}, Peer: {{ $labels.peer_ip}}, VRF: {{ $labels.vrf}}. The churn is {{ $value }} routes per second.'
           summary: 'BGP Received Path high churn detected'

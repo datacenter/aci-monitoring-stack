@@ -8,7 +8,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: Fabric Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Down
+          summary: Fabric Interface Down
+          description: Fabric Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Down
       - alert: EPG Interface Down
         expr: |
           (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= `[F0532][soaking]` |= `[sys/phys-` | regexp ".+phys-\\[(?P<interface>[^\\]]+)\\]/"[1m])) > 1)
@@ -16,7 +17,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: EPG Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Down
+          summary: EPG Interface Down
+          description: EPG Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Down
       - alert: vPC Down
         expr: |
           (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= `[F1296][soaking]` | regexp ".+vPC (?P<interface>.+) is"[1m])) > 1)
@@ -24,7 +26,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: EPG Port-Channel `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Down
+          summary: vPC Down
+          description: EPG Port-Channel `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Down
       - alert: Interface Up
         expr: |
           (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= "[E4205125]" |= `[sys/phys-` | regexp ".+phys-\\[(?P<interface>[^\\]]+)\\]/"[1m])) > 1)
@@ -32,7 +35,8 @@ groups:
         labels:
           severity: info
         annotations:
-          summary: Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Up
+          summary: Interface Up
+          description: Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Up
       - alert: vPC Up
         expr: |
           (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= `[E4205113]` | regexp ".+vPC (?P<interface>.+) is"[1m])) > 1)
@@ -40,7 +44,8 @@ groups:
         labels:
           severity: info
         annotations:
-          summary: Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Up
+          summary: vPC Up
+          description: Interface `{{ $labels.interface }}` on switch `{{ $labels.switch }}` in Fabric `{{ $labels.fabric }}` Went Up
       - record: aci_interfaces_down_count1m
         expr: |
           (sum by (fabric, switch,interface)(count_over_time({job="aci-monitoring-stack"} |= `[F1394][soaking]` or `[F0532][soaking]` [1m])))
