@@ -63,7 +63,7 @@ class_queries:
       - property_name: vlanCktEp.attributes.pcTag
         regex: "^(?P<pcTag>.*)"
       - property_name: vlanCktEp.children.[l2RsPathDomAtt].attributes.tDn
-        regex: "^topology/pod-(?P<podid>[1-9][0-9]*)/node-(?P<nodeid>[1-9][0-9]+)/sys/conng/path-\\[(?P<interface>[^\\]]+)\\]"
+        regex: "^sys/conng/path-\\[(?P<interface>[^\\]]+)\\]"
 
   epg_port_vxlan_binding:
     class_name: vxlanCktEp
@@ -85,4 +85,4 @@ class_queries:
       - property_name: vxlanCktEp.attributes.pcTag
         regex: "^(?P<pcTag>.*)"
       - property_name: vxlanCktEp.children.[l2RsPathDomAtt].attributes.tDn
-        regex: "^topology/pod-(?P<podid>[1-9][0-9]*)/node-(?P<nodeid>[1-9][0-9]+)/sys/conng/path-\\[(?P<interface>[^\\]]+)\\]"
+        regex: "^sys/conng/path-\\[(?P<interface>[^\\]]+)\\]"

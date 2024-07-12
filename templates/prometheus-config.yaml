@@ -29,8 +29,7 @@ data:
             # DO NOT INSERT SPACES and use \ for next line or aci-exporter will not be able to parse the queries
           queries:
             - "health,fabric_node_info,max_capacity,max_global_pctags,\
-              vlans,static_binding_info,node_count,\
-              epg_port_vlan_binding,epg_port_vxlan_binding,object_count,\
+              vlans,static_binding_info,node_count,object_count,\
               ps_power_usage,apic_hw_sensors,controller_topsystem"
         scheme: http
         http_sd_configs:
@@ -60,7 +59,7 @@ data:
             # DO NOT INSERT SPACES and use \ for next line or aci-exporter will not be able to parse the queries
           queries:
             - "node_topsystem,node_bgp_peers,node_bgp_peers_af,node_interface_info,\
-              node_interface_rx_stats,node_interface_rx_err_stats,\
+              node_interface_rx_stats,node_interface_rx_err_stats,epg_port_vlan_binding,epg_port_vxlan_binding,\
               node_interface_tx_stats,node_interface_tx_err_stats,node_cpu,node_memory,\
               node_scale_profiles,node_active_scale_profile,node_tcam_current,\
               node_labels_current,node_mac_current,node_ipv4_current,\

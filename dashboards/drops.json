@@ -18,6 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 3,
   "links": [],
   "panels": [
     {
@@ -85,6 +86,7 @@
         "x": 0,
         "y": 0
       },
+      "id": 1,
       "options": {
         "legend": {
           "calcs": [],
@@ -104,8 +106,8 @@
             "type": "loki",
             "uid": "P8E80F9AEF21F6940"
           },
-          "editorMode": "builder",
-          "expr": "sum by(SIP, DIP) (count_over_time({job=\"aci-monitoring-stack\"} |= `ACLLOG` | regexp `.+(?P<DropType>ACLLOG-5-ACLLOG_PKTLOG_DENY:) CName: (?P<VRF>.+)\\(.+SIP: (?P<SIP>.+), DIP: (?P<DIP>.+), SPort: (?P<SPORT>[0-9]+), DPort: (?P<DPORT>[0-9]+).+Proto: (?P<PROT>[0-9]+),.+` [1m]))",
+          "editorMode": "code",
+          "expr": "sum by(SIP, DIP) (count_over_time({job=\"aci-monitoring-stack\",fabric=~\"$fabric\"} |= `ACLLOG` | regexp `.+(?P<DropType>ACLLOG-5-ACLLOG_PKTLOG_DENY:) CName: (?P<VRF>.+)\\(.+SIP: (?P<SIP>.+), DIP: (?P<DIP>.+), SPort: (?P<SPORT>[0-9]+), DPort: (?P<DPORT>[0-9]+).+Proto: (?P<PROT>[0-9]+),.+` [1m]))",
           "legendFormat": "{{SIP}}-->{{DIP}}",
           "queryType": "range",
           "refId": "A"
@@ -125,6 +127,7 @@
         "x": 0,
         "y": 7
       },
+      "id": 2,
       "options": {
         "dedupStrategy": "none",
         "enableLogDetails": true,
@@ -142,7 +145,7 @@
             "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
-          "expr": "{service_name=\"aci-monitoring-stack\"} |= \"ACLLOG-5-ACLLOG_PKTLOG_DENY\" | regexp `.+(?P<DropType>ACLLOG-5-ACLLOG_PKTLOG_DENY:) CName: (?P<VRF>.+)\\(.+SIP: (?P<SIP>.+), DIP: (?P<DIP>.+), SPort: (?P<SPORT>[0-9]+), DPort: (?P<DPORT>[0-9]+).+Proto: (?P<PROT>[0-9]+),.+` | line_format \"Packet Drop on {{.host}}\\t VRF={{.VRF}} SIP={{.SIP}} SPORT={{.SPORT}} DIP={{.DIP}} DPORT={{.DPORT}} Protocol={{.PROT}}\"\n",
+          "expr": "{service_name=\"aci-monitoring-stack\",fabric=~\"$fabric\"} |= \"ACLLOG-5-ACLLOG_PKTLOG_DENY\" | regexp `.+(?P<DropType>ACLLOG-5-ACLLOG_PKTLOG_DENY:) CName: (?P<VRF>.+)\\(.+SIP: (?P<SIP>.+), DIP: (?P<DIP>.+), SPort: (?P<SPORT>[0-9]+), DPort: (?P<DPORT>[0-9]+).+Proto: (?P<PROT>[0-9]+),.+` | line_format \"Packet Drop on {{.host}}\\t VRF={{.VRF}} SIP={{.SIP}} SPORT={{.SPORT}} DIP={{.DIP}} DPORT={{.DPORT}} Protocol={{.PROT}}\"\n",
           "key": "Q-54a7ca93-3271-4625-bf8d-3aaa07a6dcf3-0",
           "queryType": "range",
           "refId": "A"
@@ -158,13 +161,42 @@
     "cisco-aci"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "fab2",
+          "value": "fab2"
+        },
+        "datasource": {
+          "type": "loki",
+          "uid": "P8E80F9AEF21F6940"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Fabric",
+        "multi": false,
+        "name": "fabric",
+        "options": [],
+        "query": {
+          "label": "fabric",
+          "refId": "LokiVariableQueryEditor-VariableQuery",
+          "stream": "",
+          "type": 1
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-15m",
     "to": "now"
   },
-  "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {},
   "timezone": "browser",
   "title": "Contract Drops Logs",

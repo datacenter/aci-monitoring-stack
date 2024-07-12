@@ -1,3 +1,4 @@
+{{- $files := .Files.Glob "config.d/*.yaml" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,6 +14,14 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: {{ $.Release.Name }}-aci-exporter
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-aci-exporter-config.yaml") . | sha256sum }}
+        {{- if $files }}
+        {{- range $path, $fileContents := $files }}
+        {{- $configName := regexReplaceAll "(^.*/)(.*)\\.yaml$" $path "${2}" }}
+        checksum/queries-{{ $configName }}: {{ print $fileContents | sha256sum }}
+        {{- end }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -25,7 +34,6 @@ spec:
           - name: {{ $.Release.Name }}-aci-exporter-config
             mountPath: /etc/aci-exporter/config.yaml
             subPath: config.yaml
-          {{- $files := .Files.Glob "config.d/*.yaml" }}
           {{- if $files }}
           {{- range $path, $fileContents := $files }}
           {{- $configName := regexReplaceAll "(^.*/)(.*)\\.yaml$" $path "${2}" }}
@@ -38,7 +46,6 @@ spec:
       - name: {{ $.Release.Name }}-aci-exporter-config
         configMap:
           name: {{ $.Release.Name }}-aci-exporter-config
-      {{- $files := .Files.Glob "config.d/*.yaml" }}
       {{- if $files }}
       {{- range $path, $fileContents := $files }}
       {{- $configName := regexReplaceAll "(^.*/)(.*)\\.yaml$" $path "${2}" }}

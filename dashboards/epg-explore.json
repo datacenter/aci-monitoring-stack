@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 13,
+  "id": 4,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -63,15 +63,14 @@
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": null
+                "id": "custom.width"
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 22,
+        "h": 9,
         "w": 24,
         "x": 0,
         "y": 0
@@ -89,7 +88,12 @@
         },
         "frameIndex": 0,
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "vlan"
+          }
+        ]
       },
       "pluginVersion": "11.1.0",
       "targets": [
@@ -100,7 +104,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aci_epg_port_vlan_binding{fabric=\"$fabric\",interface!~\"po[0-9]\",tenant=\"$tenant\",epg=\"$epg\"} offset 1m  or aci_epg_port_vxlan_binding{fabric=\"$fabric\",interface!~\"po[0-9]\",tenant=\"$tenant\",epg=\"$epg\"} offset 1m ",
+          "expr": "aci_epg_port_vlan_binding{fabric=\"$fabric\",interface!~\"po[0-9]\",tenant=\"$tenant\",epg=~\"$epg\"} \nor \naci_epg_port_vxlan_binding{fabric=\"$fabric\",interface!~\"po[0-9]\",tenant=\"$tenant\",epg=~\"$epg\"}",
           "format": "table",
           "instant": true,
           "interval": "5m",
@@ -124,27 +128,175 @@
               "Value": true,
               "__name__": true,
               "aci": true,
-              "fabric": false,
+              "fabric": true,
               "instance": true,
               "job": true,
-              "podid": true
+              "nodeid": true,
+              "podid": true,
+              "role": true,
+              "tenant": true
             },
+            "includeByName": {},
             "indexByName": {
-              "Time": 0,
-              "Value": 12,
-              "__name__": 1,
-              "aci": 4,
+              "Time": 4,
+              "Value": 13,
+              "__name__": 5,
+              "aci": 8,
+              "app": 0,
+              "epg": 1,
+              "fabric": 6,
+              "instance": 10,
+              "interface": 9,
+              "job": 11,
+              "name": 2,
+              "nodeid": 7,
+              "pcTag": 15,
+              "podid": 12,
+              "role": 16,
+              "tenant": 3,
+              "vxlan": 14
+            },
+            "renameByName": {
+              "name": "Node Name"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "fabric"
+            },
+            "properties": [
+              {
+                "id": "custom.width"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 0,
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "vlan"
+          }
+        ]
+      },
+      "pluginVersion": "11.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "aci_epg_port_vlan_binding{fabric=\"$fabric\",interface!~\"po[0-9]\",vlan=~\"$vlan\"} \nor \naci_epg_port_vxlan_binding{fabric=\"$fabric\",interface!~\"po[0-9]\",vxlan=~\"$vxlan\"}",
+          "format": "table",
+          "instant": true,
+          "interval": "5m",
+          "key": "Q-6472f59a-250f-4630-b568-47d5463f695d-0",
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "V(x)LANs to EPG - Interface",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "aci": true,
+              "fabric": true,
+              "instance": true,
+              "job": true,
+              "nodeid": true,
+              "podid": true,
+              "role": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Time": 1,
+              "Value": 13,
+              "__name__": 2,
+              "aci": 5,
               "app": 6,
               "epg": 7,
-              "fabric": 2,
-              "instance": 9,
-              "interface": 8,
-              "job": 10,
-              "nodeid": 3,
-              "pcTag": 13,
-              "podid": 11,
-              "tenant": 5,
-              "vlan": 14
+              "fabric": 3,
+              "instance": 10,
+              "interface": 9,
+              "job": 11,
+              "name": 8,
+              "nodeid": 4,
+              "pcTag": 16,
+              "podid": 12,
+              "role": 17,
+              "tenant": 0,
+              "vlan": 14,
+              "vxlan": 15
             },
             "renameByName": {}
           }
@@ -155,14 +307,16 @@
   ],
   "refresh": "",
   "schemaVersion": 39,
-  "tags": [],
+  "tags": [
+    "cisco-aci"
+  ],
   "templating": {
     "list": [
       {
         "current": {
           "selected": true,
-          "text": "scale2-fabric",
-          "value": "scale2-fabric"
+          "text": "fab1",
+          "value": "fab1"
         },
         "datasource": {
           "type": "prometheus",
@@ -189,14 +343,15 @@
       {
         "current": {
           "selected": true,
-          "text": "TREX_test",
-          "value": "TREX_test"
+          "text": "common",
+          "value": "common"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "prometheus"
         },
         "definition": "label_values(aci_epg_port_vlan_binding{fabric=\"$fabric\"},tenant)",
+        "description": "This variable shows all the Tenants used on a Fabric",
         "hide": 0,
         "includeAll": false,
         "label": "Tenant",
@@ -216,19 +371,20 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "EPG1",
-          "value": "EPG1"
+          "selected": true,
+          "text": [],
+          "value": []
         },
         "datasource": {
           "type": "prometheus",
           "uid": "prometheus"
         },
         "definition": "label_values({fabric=\"$fabric\", tenant=\"$tenant\"},epg)",
+        "description": "This variable shows all the EPG used on a Fabric-Tenant pair and is ONLY used in the EPG Explore panel",
         "hide": 0,
         "includeAll": false,
         "label": "EPG",
-        "multi": false,
+        "multi": true,
         "name": "epg",
         "options": [],
         "query": {
@@ -243,26 +399,81 @@
         "type": "query"
       },
       {
+        "current": {
+          "selected": false,
+          "text": [
+            ""
+          ],
+          "value": [
+            ""
+          ]
+        },
         "datasource": {
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "filters": [],
+        "definition": "label_values(aci_epg_port_vlan_binding{fabric=\"$fabric\"},vlan)",
+        "description": "This variable shows all the VLAN used on a Fabric and is ONLY used in the V(x)LANs Explore panel",
         "hide": 0,
-        "name": "Filters",
+        "includeAll": false,
+        "label": "Vlan",
+        "multi": true,
+        "name": "vlan",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(aci_epg_port_vlan_binding{fabric=\"$fabric\"},vlan)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
-        "type": "adhoc"
+        "sort": 3,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": [
+            ""
+          ],
+          "value": [
+            ""
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(aci_epg_port_vxlan_binding{fabric=\"$fabric\"},vxlan)",
+        "description": "This variable shows all the VXLAN used on a Fabric and is ONLY used in the V(x)LANs Explore panel",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Vxlan",
+        "multi": true,
+        "name": "vxlan",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(aci_epg_port_vxlan_binding{fabric=\"$fabric\"},vxlan)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 3,
+        "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "EPG Explore Copy",
-  "uid": "edrelgfqqh0qoe",
+  "title": "EPG Explore",
+  "uid": "a4f7ea75-6ef6-4639-809a-755684e11ac1",
   "version": 10,
   "weekStart": ""
 }
