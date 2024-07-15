@@ -17,3 +17,33 @@ The ACI-Monitoring-Stack integrates the following key components:
 
 - Pre-configured ACI data collections queries, alerts, and dashboards (Work In Progress): The ACI-Monitoring-Stack provides a solid foundation for monitoring an ACI fabric with its pre-defined queries, dashboards, and alerts. While these tools are crafted based on best practices to offer immediate insights into network performance, they are not exhaustive. The strength of the ACI-Monitoring-Stack lies in its community-driven approach. Users are invited to contribute their expertise by providing feedback, sharing custom solutions, and helping enhance the stack. Your input helps to refine and expand the stack's capabilities, ensuring it remains a relevant and powerful tool for network monitoring.
 
+# Your Stack
+
+```mermaid
+flowchart-elk
+  subgraph ACI Monitoring Stack
+    G["Grafana"]
+    P[("Prometheus")]
+    L["Loki"]
+    PT["Promtail"]
+    AM["Alertmanager"]
+    A["ACI Exporter"]
+    G--"PromQL"-->P
+    G--"LogQL"-->L
+    P-->AM
+    PT-->L
+    P--"Service Discovery"-->A
+  end
+  subgraph ACI
+    S["Switches"]
+    APIC["APIC"]
+  end
+  A--"API Queries"-->S
+  A--"API Queries"-->APIC
+  S--"Syslog"-->PT
+  APIC--"Syslog"-->PT
+  U["User"]
+  N["Notifications (Mail/Webex etc...)"]
+  U-->G
+  AM-->N
+```
