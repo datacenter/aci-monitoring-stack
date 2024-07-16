@@ -107,7 +107,7 @@
             "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
-          "expr": "sum by(SIP, DIP) (count_over_time({job=\"aci-monitoring-stack\",fabric=~\"$fabric\"} |= `ACLLOG` | regexp `.+(?P<DropType>ACLLOG-5-ACLLOG_PKTLOG_DENY:) CName: (?P<VRF>.+)\\(.+SIP: (?P<SIP>.+), DIP: (?P<DIP>.+), SPort: (?P<SPORT>[0-9]+), DPort: (?P<DPORT>[0-9]+).+Proto: (?P<PROT>[0-9]+),.+` [1m]))",
+          "expr": "sum by(SIP, DIP) (count_over_time({job=\"aci-monitoring-stack\",fabric=~\"$fabric\"} |= `ACLLOG-5-ACLLOG_PKTLOG_DENY` | regexp `.+(?P<DropType>ACLLOG-5-ACLLOG_PKTLOG_DENY:) CName: (?P<VRF>.+)\\(.+SIP: (?P<SIP>.+), DIP: (?P<DIP>.+), SPort: (?P<SPORT>[0-9]+), DPort: (?P<DPORT>[0-9]+).+Proto: (?P<PROT>[0-9]+),.+` [1m]))",
           "legendFormat": "{{SIP}}-->{{DIP}}",
           "queryType": "range",
           "refId": "A"
