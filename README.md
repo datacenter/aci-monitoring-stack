@@ -60,8 +60,15 @@ flowchart-elk
 
 ## Pre Requisites
 
-- Kubernetes Cluster: Currently the stack has been tested on `Upstream Kubernetes 1.30.x` and `Minikube` (Yes it works on a single minikube node is that light!)
-  - Persistent Volume
-- Helm: This stack is direibuted as a helm chart
+- Kubernetes Cluster: Currently the stack has been tested on `Upstream Kubernetes 1.30.x` and `Minikube`.
+  - Persistent Volumes
+- Helm: This stack is distributed as a helm chart and relies on 3rd party helm charts as well
 - Connectivity from your Kubernetes Cluster to ACI either over Out Of Band or In Band
+
+## Installation
+
+
+If you are installing on Minikube please follow the [Minikube Installation Steps](docs/minikube.md) and then *come back here.*
+
+### Syslog config
 
