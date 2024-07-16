@@ -156,6 +156,11 @@ promtail:
     volumes:
       - 'secret'
       - 'downwardAPI'
+syslog:
+  image:
+    repository: balabit/syslog-ng
+    tag: 4.7.1
+    pullPolicy: IfNotPresent
 
 loki:
   enabled: true

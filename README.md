@@ -19,6 +19,7 @@ The ACI-Monitoring-Stack integrates the following key components:
 
 # Your Stack
 
+Here you can see a high level diagram of the components used and how they interact together  
 ```mermaid
 flowchart-elk
   subgraph ACI Monitoring Stack
@@ -26,24 +27,29 @@ flowchart-elk
     P[("Prometheus")]
     L["Loki"]
     PT["Promtail"]
+    SL["Syslog-ng"]
     AM["Alertmanager"]
     A["ACI Exporter"]
     G--"PromQL"-->P
     G--"LogQL"-->L
     P-->AM
     PT-->L
+    SL-->PT
     P--"Service Discovery"-->A
   end
   subgraph ACI
     S["Switches"]
     APIC["APIC"]
   end
-  A--"API Queries"-->S
-  A--"API Queries"-->APIC
-  S--"Syslog"-->PT
-  APIC--"Syslog"-->PT
   U["User"]
   N["Notifications (Mail/Webex etc...)"]
+  V{Ver >= 6.1}
+  A--"API Queries"-->S
+  A--"API Queries"-->APIC
   U-->G
   AM-->N
+  S--"Syslog"-->V
+  APIC--"Syslog"-->V
+  V -->|Yes| PT
+  V -->|No| SL
 ```
