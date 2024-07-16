@@ -6,4 +6,4 @@ metadata:
     app: {{ .Release.Name }}-prometheus-alerts
 {{ include "aci-monitoring-stack.labels" $ | indent 4 }}
 data:
-  prometheus-alerts.yaml: {{ $.Files.Get "../alerts/prom/alerts.yaml" | toYaml | indent 4 }}
+  prometheus-alerts.yaml: {{ $.Files.Get "alerts/prom/alerts.yaml" | toYaml | indent 4 }}
