@@ -1,4 +1,4 @@
-{{- $files := .Files.Glob "../config.d/*.yaml" }}
+{{- $files := .Files.Glob "config.d/*.yaml" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
