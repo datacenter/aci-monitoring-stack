@@ -1,4 +1,4 @@
-{{- $files := .Files.Glob "/config.d/*.yaml" }}
+{{- $files := .Files.Glob "config.d/*.yaml" }}
 {{- if $files }}
 apiVersion: v1
 kind: ConfigMapList
