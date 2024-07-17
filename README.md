@@ -177,6 +177,7 @@ prometheus:
                   credentials: "<credentials>"
 ```
 
+If you use Webex here some [config steps](docs/webex.md) for you!
 ### Grafana
 
 Grafana is installed via its [own Chart](https://github.com/grafana/helm-charts/tree/main/charts/grafana) the main options you need to set are:
@@ -319,5 +320,10 @@ Here an [Example Config for 4 Fabrics](4-fabric-example.yaml)
 
 ## Chart Deployment
 
-- Create a file containing all the `monitoring-stack-config.yaml`
+- Create a file containing all your configs i.e.: `aci-mon-stack-config.yaml`
 
+```shell
+helm repo add aci-monitoring-stack https://datacenter.github.io/aci-monitoring-stack
+helm repo update
+helm -n aci-mon-stack upgrade --install aci-monitoring-stack aci-monitoring-stack -f aci-mon-stack-config.yaml
+```
