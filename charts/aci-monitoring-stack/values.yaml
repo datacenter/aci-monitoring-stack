@@ -264,7 +264,8 @@ loki:
     enabled: true
   singleBinary:
     replicas: 0
-
+  chunksCache:
+    allocatedMemory: 1024
   ingester:
     replicas: 0
   querier:

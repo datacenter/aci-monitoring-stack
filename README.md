@@ -224,9 +224,13 @@ The `backend` and `write` deployments requires persistent volumes. This chart is
 - `3 x data-loki-backend-X`
 - `3 x data-loki-write-X`
 
-The PVC Size can be easily changed if required. Check the `loki` section in the [Values](charts/aci-monitoring-stack/values.yaml) file.
+The PVC Size can be easily changed if required.
 
 Loki also requires an `Object Store`. This chart is pre-configured to deploy [minio](https://min.io/). *Note:* Currently [Loki Chart](https://github.com/grafana/loki/tree/main/production/helm/loki) is deploying a very old version of `Minio` and there is a [PR open](https://github.com/grafana/loki/pull/11409) to address this already.
+
+Loki also support `chunks-cache` via `memcached`. The default config allocates 8G of memory. I have decreased this to 1G by default.
+
+If you want to change any of these parameters check the `loki` section in the [Values](charts/aci-monitoring-stack/values.yaml) file.
 
 Assuming the default parameters are acceptable the only required config for loki is to set the `rulerConfig.external_url` to point to the Grafana `ingress` URL
 
