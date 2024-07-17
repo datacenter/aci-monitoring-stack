@@ -327,5 +327,5 @@ Here an [Example Config for 4 Fabrics](docs/4-fabric-example.yaml)
 ```shell
 helm repo add aci-monitoring-stack https://datacenter.github.io/aci-monitoring-stack
 helm repo update
-helm -n aci-mon-stack upgrade --install --create-namespace aci-monitoring-stack aci-monitoring-stack -f aci-mon-stack-config.yaml
+helm -n aci-mon-stack upgrade --install --create-namespace aci-mon-stack aci-monitoring-stack/aci-monitoring-stack -f aci-mon-stack-config.yaml
 ```
