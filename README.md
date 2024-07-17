@@ -7,17 +7,17 @@ Harness the power of open source to efficiently monitor your Cisco ACI environme
 
 The ACI-Monitoring-Stack integrates the following key components:
 
-- Grafana: The leading open-source analytics and visualization platform. Grafana allows you to create dynamic dashboards that provide real-time insights into your network's performance, health, and metrics. With its user-friendly interface, you can easily visualize and correlate data across your ACI fabric, enabling quicker diagnostics and informed decision-making.
+- [Grafana](https://grafana.com/oss/grafana/): The leading open-source analytics and visualization platform. Grafana allows you to create dynamic dashboards that provide real-time insights into your network's performance, health, and metrics. With its user-friendly interface, you can easily visualize and correlate data across your ACI fabric, enabling quicker diagnostics and informed decision-making.
 
-- Prometheus: A powerful open-source monitoring and alerting toolkit. Prometheus excels in collecting and storing metrics in a time-series database, allowing for flexible queries and real-time alerting. Its seamless integration with Grafana ensures that your monitoring stack provides a detailed and up-to-date view of your ACI environment.
+- [Prometheus](https://prometheus.io/): A powerful open-source monitoring and alerting toolkit. Prometheus excels in collecting and storing metrics in a time-series database, allowing for flexible queries and real-time alerting. Its seamless integration with Grafana ensures that your monitoring stack provides a detailed and up-to-date view of your ACI environment.
 
-- Loki: Designed for efficiently aggregating and querying logs from your entire ACI ecosystem. Loki complements Prometheus by focusing on log aggregation, providing a unified stack for metrics and logs. Its integration with Grafana enables you to correlate log data with metrics and create a holistic monitoring experience.
+- [Loki](https://grafana.com/oss/loki/): Designed for efficiently aggregating and querying logs from your entire ACI ecosystem. Loki complements Prometheus by focusing on log aggregation, providing a unified stack for metrics and logs. Its integration with Grafana enables you to correlate log data with metrics and create a holistic monitoring experience.
 
-- Promtail: the agent responsible for gathering and shipping the log files to the Loki server.
+- [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/): the agent responsible for gathering and shipping the log files to the Loki server.
 
-- Syslog-ng: is an open-source implementation of the Syslog protocol, its role in this stack is to translate syslog messages from RFC 3164 to 5424. This is needed because Promtail only support Syslog RFC 5424 over TCP and this capability is only available in ACI 6.1 and above.
+- [Syslog-ng](https://github.com/syslog-ng/syslog-ng): is an open-source implementation of the Syslog protocol, its role in this stack is to translate syslog messages from RFC 3164 to 5424. This is needed because Promtail only support Syslog RFC 5424 over TCP and this capability is only available in ACI 6.1 and above.
 
-- ACI-Exporter: A custom-built exporter that serves as the bridge between your Cisco ACI environment and the Prometheus monitoring ecosystem. The ACI-Exporter translates ACI-specific metrics into a format that Prometheus can ingest, ensuring that all crucial data points are captured and monitored effectively.
+- [ACI-Exporter](https://github.com/opsdis/aci-exporter): A custom-built exporter that serves as the bridge between your Cisco ACI environment and the Prometheus monitoring ecosystem. The ACI-Exporter translates ACI-specific metrics into a format that Prometheus can ingest, ensuring that all crucial data points are captured and monitored effectively.
 
 - Pre-configured ACI data collections queries, alerts, and dashboards (Work In Progress): The ACI-Monitoring-Stack provides a solid foundation for monitoring an ACI fabric with its pre-defined queries, dashboards, and alerts. While these tools are crafted based on best practices to offer immediate insights into network performance, they are not exhaustive. The strength of the ACI-Monitoring-Stack lies in its community-driven approach. Users are invited to contribute their expertise by providing feedback, sharing custom solutions, and helping enhance the stack. Your input helps to refine and expand the stack's capabilities, ensuring it remains a relevant and powerful tool for network monitoring.
 
@@ -81,13 +81,13 @@ If you are installing on Minikube please follow the [Minikube Preparation Steps]
 
 ## Config Preparation
 
-The ACI Monitoring Stack is a combination of several [Charts](charts), if you are familiar with Helm you are aware of the struggle to propagate dynamic values to sub-charts. For example it is not possible to pass to a sub-chart the name of a service in a dynamic way. 
+The ACI Monitoring Stack is a combination of several [Charts](charts/aci-monitoring-stack/charts), if you are familiar with Helm you are aware of the struggle to propagate dynamic values to sub-charts. For example it is not possible to pass to a sub-chart the name of a service in a dynamic way. 
 
 In order to simplify the user experience the `chart` comes with a few pre-configured parameters that are populated in the configurations of the various sub-charts. 
 
 For example the ACI Exporter Service Name is pre configured as `aci-exporter-svc` and this value is then passed to Prometheus as service Discovery URL.
 
-All these values can be customized and if you need to you can refer to the [Values](values.yaml) file.
+All these values can be customized and if you need to you can refer to the [Values](charts/aci-monitoring-stack/values.yaml) file.
 
 *Note:* This is the first HELM char `camrossi` created and he is sure it can be improved. If you have suggestions they are extremely welcome! :) 
 
@@ -129,10 +129,10 @@ aci_exporter:
 
 Prometheus is installed via its [own Chart](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus) the options you need to set are:
 
-- The `ingress` config and the baseURL: These most likely are the same URL which can access p`rometheus and `alertmanager`
+- The `ingress` config and the baseURL: These most likely are the same URL which can access `prometheus` and `alertmanager`
 - Persistent Volume Capacity
-- (Optional) `retentionSize`: this is only needed if you wanna limit the retention by size. Keep in mind that if you run out of disk space Prometheus WILL stop working. 
-- (Optional) alertmanager route: these are used to send notifications via Mail/Webex etc... the complete syntax is available [Here](https://prometheus.io/docs/alerting/latest/configuration/#receiver-integration-settings) 
+- (Optional) `retentionSize`: this is only needed if you want to limit the retention by size. Keep in mind that if you run out of disk space Prometheus WILL stop working. 
+- (Optional) alertmanager `route`: these are used to send notifications via Mail/Webex etc... the complete syntax is available [Here](https://prometheus.io/docs/alerting/latest/configuration/#receiver-integration-settings) 
 Below an example:
 ```yaml
 prometheus:
@@ -178,15 +178,17 @@ prometheus:
 ```
 
 If you use Webex here some [config steps](docs/webex.md) for you!
+
 ### Grafana
 
 Grafana is installed via its [own Chart](https://github.com/grafana/helm-charts/tree/main/charts/grafana) the main options you need to set are:
 
-- The `ingress` config: External URL which can access Grafana, 
+- The `ingress` config: External URL which can access Grafana.
 - Persistent Volume Capacity
 - (Optional) `adminPassword`: If not set will be auto generated and can be found in the `grafana` secret
-- (Optional) `viewers_can_edit`: This allows users with a `view only role` to modify the dashboard and access `Explorer` to execute queries against `Pormetheus` and `Loki`. However the user will not be able to save any changes.
-- (Optional) `deploymentStrategy`: if Grafana `Persistent Volume` is of type `ReadWriteOnce` rolling updates will get stuck as the new pod cannot start. Setting `deploymentStrategy.type` to `Recreate` destroy the original pod before starting the new one. 
+- (Optional) `viewers_can_edit`: This allows users with a `view only` role to modify the dashboards and access `Explorer` to execute queries against `Pormetheus` and `Loki`. However the user will not be able to save any changes.
+- (Optional) `deploymentStrategy`: if Grafana `Persistent Volume` is of type `ReadWriteOnce` rolling updates will get stuck as the new pod cannot start before the old one releases the PVC. Setting `deploymentStrategy.type` to `Recreate` destroy the original pod before starting the new one.
+
 Below an example:
 
 ```yaml
@@ -210,7 +212,7 @@ grafana:
 
 The syslog config is the most complicated part as it relies on 3 components (`promtail`, `loki` and `syslog-ng`) with their own individual configs. Furthermore there are two issues we need to overcome:
 
-- The Syslog messages don't contain the ACI Fabric name: to be able to distinguish the messaged from one fabric to another the only solution is to use dedicated `external services` with unique IP:Port pair per fabric.
+- The Syslog messages don't contain the ACI Fabric name: to be able to distinguish the messaged from one fabric to another the only solution is to use dedicated `external services` with unique `IP:Port` pair per Fabric.
 - Until ACI 6.1 we need `syslog-ng` between `ACI` and `Promtail` to convert from RFC 3164 to 5424
   *Note*: Promtail 3.1.0 adds support for RFC 3164 however this **DOES NOT** work for Cisco Switches and still requires syslog-ng. syslog-ng `syslog-parser` has extensive logic to handle all the complexities (and inconsistencies) of RFC 3164 messages.
 
@@ -218,18 +220,17 @@ The syslog config is the most complicated part as it relies on 3 components (`pr
 
 Loki is deployed with the [Simple Scalable](https://grafana.com/docs/loki/latest/get-started/deployment-modes/#simple-scalable) Profile and is composed of a `backend`, `read` and `write` deployment with a replica of 3.
 
-For the `backend` and `write` volumes it is required to allocation persistent volumes and each deployment will have a dedicated PVC resulting in a total of 6 PVC:
+The `backend` and `write` deployments requires persistent volumes. This chart is pre-configured to allocate 2Gi Volumes for each deployment (a total of 6 PVC will be created):
 - `3 x data-loki-backend-X`
 - `3 x data-loki-write-X`
 
-The default configuration will deploy `2Gi` volumes but this can be easily changed if required check the `loki` section in the [Values](values.yaml) file. if needed.
+The PVC Size can be easily changed if required. Check the `loki` section in the [Values](charts/aci-monitoring-stack/values.yaml) file.
 
-Loki also requires an `Object Store` and the chart is pre-configured to deploy [minio](https://min.io/).*Note:* Currently [Loki Chart](https://github.com/grafana/loki/tree/main/production/helm/loki) is deploying a very old version of `Minio` and there is a [PR open](https://github.com/grafana/loki/pull/11409) to address this already.
+Loki also requires an `Object Store`. This chart is pre-configured to deploy [minio](https://min.io/). *Note:* Currently [Loki Chart](https://github.com/grafana/loki/tree/main/production/helm/loki) is deploying a very old version of `Minio` and there is a [PR open](https://github.com/grafana/loki/pull/11409) to address this already.
 
 Assuming the default parameters are acceptable the only required config for loki is to set the `rulerConfig.external_url` to point to the Grafana `ingress` URL
 
 ```yaml
-
 loki: 
   loki:
     rulerConfig:
@@ -238,10 +239,10 @@ loki:
 
 ### Promtail and Syslog-ng
 
-These two components are tightly coupled together and will be explained together.
+These two components are tightly coupled together.
 
-Promtail is the layer ingesting the logs in RFC5424 format and sends them to Loki. 
-Syslog-ng is the layer that translates the logs from RFC 3164 to RFC5424 and sends them to Promtail. 
+- Syslog-ng translates logs from RFC 3164 to RFC 5424 and forwards them to Promtail. 
+- Promtail is ingesting logs in RFC 5424 format and forwards them to Loki. 
 
 Promtail is pre-configured with:
 
@@ -249,12 +250,13 @@ Promtail is pre-configured with:
 - Loki Push Gateway url: `loki-gateway` This is the Loki Gateway K8s service name. 
 - Auto generated `scrapeConfigs` that will map a Fabric to a `IP:Port` Pair. 
 
-These setting can be easily changed if required check the `Promtail` section in the [Values](values.yaml) file for more details.
+These setting can be easily changed if required check the `Promtail` section in the [Values](charts/aci-monitoring-stack/values.yaml) file for more details.
 
 Syslog-ng is pre-configured with:
 - Deployment Mode with 1 replica
 
-If you are happy with my defaults the only configs required are setting the `extraPorts` for Loki and `services` for Syslog-ng. You will need one entry per fabric. `Syslog-ng` is only needed for ACI < 6.1
+If you are happy with my defaults the only configs required are setting the `extraPorts` for Loki and `services` for Syslog-ng. You will need one entry per fabric and the portsd needs to "match", see the diagram below for a visual representation.
+`Syslog-ng` is only needed for ACI < 6.1
 
 Below a diagram of what is our goal for an ACI 6.1 fabric and an ACI 5.2 one.
 ```mermaid
@@ -316,7 +318,7 @@ syslog:
 ### ACI Syslog Config
 If you need a reminder on how to configure ACI Syslog take a look [Here](docs/syslog.md)
 
-Here an [Example Config for 4 Fabrics](4-fabric-example.yaml)
+Here an [Example Config for 4 Fabrics](docs/4-fabric-example.yaml)
 
 ## Chart Deployment
 
@@ -325,5 +327,5 @@ Here an [Example Config for 4 Fabrics](4-fabric-example.yaml)
 ```shell
 helm repo add aci-monitoring-stack https://datacenter.github.io/aci-monitoring-stack
 helm repo update
-helm -n aci-mon-stack upgrade --install aci-monitoring-stack aci-monitoring-stack -f aci-mon-stack-config.yaml
+helm -n aci-mon-stack upgrade --install --create-namespace aci-monitoring-stack aci-monitoring-stack -f aci-mon-stack-config.yaml
 ```
