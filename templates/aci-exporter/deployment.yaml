@@ -25,10 +25,10 @@ spec:
     spec:
       containers:
         - name: aci-exporter
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.aci_exporter.image.repository }}:{{ .Values.aci_exporter.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.aci_exporter.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.config.port }}
+            - containerPort: {{ .Values.aci_exporter.port }}
               protocol: TCP
           volumeMounts:
           - name: {{ $.Release.Name }}-aci-exporter-config

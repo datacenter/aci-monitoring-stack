@@ -18,8 +18,8 @@ data:
         static_configs:
           - targets:
             - localhost:9090
-      {{- if $.Values.config.aciServiceDiscoveryURLs }}
-      {{- range $k, $v := $.Values.config.aciServiceDiscoveryURLs }}
+      {{- if $.Values.aci_exporter.aciServiceDiscoveryURLs }}
+      {{- range $k, $v := $.Values.aci_exporter.aciServiceDiscoveryURLs }}
       - job_name: {{ $k }}-aci-exporter-apics
         scrape_interval: 5m
         scrape_timeout: 4m

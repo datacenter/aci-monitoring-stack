@@ -19,7 +19,7 @@ spec:
       containers:
         - name: syslog-ng
           image: "{{ .Values.syslog.image.repository }}:{{ .Values.syslog.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.syslog.image.pullPolicy }}
           ports:
           {{- range $key, $values := .Values.syslog.services }}
           - name: {{ .name | default $key }}

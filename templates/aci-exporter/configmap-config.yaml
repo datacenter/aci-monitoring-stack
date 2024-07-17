@@ -7,12 +7,12 @@ metadata:
 {{ include "aci-monitoring-stack.labels" $ | indent 4 }}
 data:
   config.yaml: |-
-    port: {{ $.Values.config.port }}
-    prefix: {{ $.Values.config.prefix }}
+    port: {{ $.Values.aci_exporter.port }}
+    prefix: {{ $.Values.aci_exporter.prefix }}
     # Profiles for different fabrics
     fabrics:
-      {{- if $.Values.config.fabrics }}
-      {{- range $k, $v := $.Values.config.fabrics }}
+      {{- if $.Values.aci_exporter.fabrics }}
+      {{- range $k, $v := $.Values.aci_exporter.fabrics }}
       {{ $k }}:
         username: {{ $v.username }}
         password: {{ $v.password | quote }}
@@ -29,6 +29,6 @@ data:
       {{- end }}
     # Http client settings used to access apic
     httpclient:
-      insecurehttps: {{ $.Values.config.httpclient.insecurehttps }}
-      keepalive: {{ $.Values.config.httpclient.keepalive }}
-      timeout: {{ $.Values.config.httpclient.timeout }}
+      insecurehttps: {{ $.Values.aci_exporter.httpclient.insecurehttps }}
+      keepalive: {{ $.Values.aci_exporter.httpclient.keepalive }}
+      timeout: {{ $.Values.aci_exporter.httpclient.timeout }}

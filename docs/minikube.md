@@ -1,88 +1,63 @@
 # Minikube
 
-minikube config set memory 4016
-minikube config set cpus 4
+This can be used to run aci-monitoring-stack locally (say on your laptop).
 
-This can be used to run aci-monitoring-stack locally  however by default minikube only provide access locally. If you know what you are doing you can install NGINX on the host running minikube to provide access to your service. 
+By default minikube only provide access locally and this is an issue for logs ingestion however for a lab you can configure HAProxy to expose you Minikube instance over the Host IP Address. This implies that you should configure all your External Services as `NodePort` and configure HAProxy to send the traffic to the correct `NodePort`
 
-For example:
+I have configured minikube with 4GB or RAM and 4 CPU and that was plenty to monitor a small 10 switch ACI Fabric. 
 
 ```shell
-grafana:
-  enable: true
-  service:
-    enabled: true
-    type: NodePort
-    NodePort: 9000
+minikube config set memory 4016
+minikube config set cpus 4
+```
 
+Example HPProxy Config
 
-global
-	log /dev/log	local0
-	log /dev/log	local1 notice
-	chroot /var/lib/haproxy
-	stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
-	stats timeout 30s
-	user haproxy
-	group haproxy
-	daemon
-
-	# Default SSL material locations
-	ca-base /etc/ssl/certs
-	crt-base /etc/ssl/private
-
-	# See: https://ssl-config.mozilla.org/#server=haproxy&server-version=2.0.3&config=intermediate
-        ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
-        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
-        ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
-
-defaults
-	log	global
-	mode	http
-	option	httplog
-	option	dontlognull
-        timeout connect 5000
-        timeout client  50000
-        timeout server  50000
-	errorfile 400 /etc/haproxy/errors/400.http
-	errorfile 403 /etc/haproxy/errors/403.http
-	errorfile 408 /etc/haproxy/errors/408.http
-	errorfile 500 /etc/haproxy/errors/500.http
-	errorfile 502 /etc/haproxy/errors/502.http
-	errorfile 503 /etc/haproxy/errors/503.http
-	errorfile 504 /etc/haproxy/errors/504.http
-
+```shell
 frontend grafana
-    bind 172.16.0.14:443 ssl crt /etc/ssl/private/grafana.pem
+    # Here I am doing SSL Termination
+    bind <HostIP>:443 ssl crt /etc/ssl/private/grafana.pem
     default_backend grafana
 
 backend grafana
     balance roundrobin
-    server grafana 192.168.49.2:30000  check maxconn 20
+    server grafana <minikubeIP>:30000  check
 
 frontend promtail-site1
-    bind 172.16.0.14:1511
+    mode tcp
+    bind <HostIP>:1511
     default_backend promtail-site1
 
 backend promtail-site1
+    mode tcp
     balance roundrobin
-    server promtail 192.168.49.2:30001  check maxconn 20
+    server promtail <minikubeIP>:30001  check
 
 frontend promtail-site2
-    bind 172.16.0.14:1512
+    mode tcp
+    bind <HostIP>:1512
     default_backend promtail-site2
 
 backend promtail-site2
+    mode tcp
     balance roundrobin
-    server promtail 192.168.49.2:30002  check maxconn 20
+    server promtail <minikubeIP>:30002  check
 
 frontend promtail-site3
-    bind 172.16.0.14:1513
+    mode tcp
+    bind <HostIP>:1513
     default_backend promtail-site3
 
 backend promtail-site3
+    mode tcp
     balance roundrobin
-    server promtail 192.168.49.2:30003  check maxconn 20
+    server promtail <minikubeIP>:30003  check
 ```
+
+
+# Troubleshooting
+
+While installing Minikube I hit the following issues:
 
 ## minikube/podman wrong CNI Version
 
@@ -90,8 +65,18 @@ If minikube dosen't start and complains about the wrong CNI version for bridge o
 
 ## Prometheus does not install under minikube/podman 
 
-Log into minikube with minikube ssh.
-Run sudo vi /etc/containers/registries.conf.
-Add unqualified-search-registries = ["docker.io", "quay.io"].
-Restart minikube with minikube stop && minikube start.
+Log into minikube with `minikube ssh`.
 
+
+```shell
+sudo vi /etc/containers/registries.conf
+```
+
+`unqualified-search-registries = ["docker.io", "quay.io"]`
+
+Restart minikube
+```shell
+minikube stop && minikube start
+```
+
+>
