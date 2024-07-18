@@ -16,9 +16,9 @@ Data is currently collected in two ways:
 
 - Syslog Ingestion: The ACI Side Config "decides" what to send and assuming the correct logging level is selected you can then build the dashboards in grafana using Loki as a data source. You can take a look at the `Contract Drops Logs` dashboard for inspiration. 
 
-- [ACI Exporter](https://github.com/opsdis/aci-exporter) Queries: which queries and how the data is collected is highly customizable.
+- [aci-exporter](https://github.com/opsdis/aci-exporter) Queries: which queries and how the data is collected is highly customizable.
 
-### ACI Exporter and Prometheus
+### aci-exporter and Prometheus
 
 The general idea is to use aci-exporter to convert ACI Rest API Calls in the Prometheus exposition format.
 
@@ -26,9 +26,9 @@ The exporter also have the capability to directly scrape individual switches usi
 
 **Note:** In the context of this HELM Chart a query **MUST** be executed against a switch if possible. Any code submission that does not adhere to this convention will not be accepted. 
 
-#### ACI Exporter Quick Start
+#### aci-exporter Quick Start
 
-Before working on aci-exporter, Prometheus and Grafana at the same time I strongly suggest to take a look at the [ACI Exporter](https://github.com/opsdis/aci-exporter) git repo and understand how it works and how is configured. 
+Before working on aci-exporter, Prometheus and Grafana at the same time I strongly suggest to take a look at the [aci-exporter](https://github.com/opsdis/aci-exporter) git repo and understand how it works and how is configured. 
 
 Here a complete example to get you started (you need to [install go](https://go.dev/doc/install))
 
@@ -48,7 +48,7 @@ fabrics:
       - https://apic1
       - https://apic2
 ```
-- ACI Exporter will, by default, load the queries it can execute from the `config.d` directory. For now we don't want that so we can start the exporter with this command that will just load the bare minimum config to access the fabric.
+- The aci-exporter will, by default, load the queries it can execute from the `config.d` directory. For now, we don't want that so we can start the exporter with this command that will just load the bare minimum config to access the fabric.
 
 ```bash
 ./build/aci-exporter -config fab1.yaml -config_dir /dev/null
@@ -57,7 +57,7 @@ fabrics:
 {"config_file":"/home/cisco/aci-exporter/fab1.yaml","level":"info","msg":"aci-exporter starting","port":9643,"read_timeout":0,"time":"2024-07-18T14:17:59+10:00","version":"undefined","write_timeout":0}
 ```
 
-- Now ACI Exporter is running on our host on port 9643, let's try a Service Discovery just run a HTTP request against the `/sd` URL.
+- Now aci-exporter is running on our host on port 9643, let's try a Service Discovery just run an HTTP request against the `/sd` URL.
 
 ``` bash
 curl http://aci-exporter-ip:9643/sd
@@ -95,7 +95,7 @@ This should return a list with all the Controllers and Switches in your fabric a
 Now let's try to build a query to check the `interface operation state and speed`.
 
 - The ACI Class we can use for this query is `ethpmPhysIf`
-- This class is available both on the APIC as well as from the Switches: we will run this query **against the switchers** because it is the core principle for this HELM chart and it scales better.
+- This class is available both on the APIC and on the Switches: we will run this query **against the switches** because it is the core principle for this HELM chart, and it scales better.
 - *Tip:* If you use Visual Studio Code you can install the `Thunder Client` to test API Calls.
 
 Every switch will return one `ethpmPhysIf` object for every interface. An example is provided below:
@@ -171,14 +171,14 @@ Of all the various properties of `ethpmPhysIf` we need only 3:
     - `interface_type`: Physical, Port-Channel etc...
     - `interface`: The interface name, i.e. Eth1/1
 
-With these infos we can create 2 metrics that I am gonna call: 
+With these infos we can create 2 metrics that I am going to call: 
 
 - `interface_oper_speed`
 - `interface_oper_state`
 
-Both metrics will be labeled with the`interface_type` and `interface` (name). However we are faced with an issue... Promethesu can only ingest numbers so we can't just pass `40G` or `up` as a valid metric. 
+Both metrics will be labeled with the`interface_type` and `interface` (name). However, we are faced with an issue... Prometheus can only ingest numbers, so we can't just pass `40G` or `up` as a valid metric. 
 
-Thankfully one of the many ACI Exporter capabilities is to perform `value_transform` so we can write something like this:
+Thankfully one of the many aci-exporter capabilities is to perform `value_transform` so we can write something like this:
 
 ```yaml 
 value_transform:
@@ -199,7 +199,7 @@ value_transform:
 ```
 To convert text to numbers and allow Prometheus to ingest this data.
 
-Lastly we need to also extract the `labels` from the `dn`. The format for this specific class is always something similar to `"sys/phys-[eth1/34]/phys"` to do this ACI Exporter employs RegEx, below an example:
+Lastly we need to also extract the `labels` from the `dn`. The format for this specific class is always something similar to `"sys/phys-[eth1/34]/phys"` to do this aci-exporter employs RegEx, below an example:
 
 ```yaml
 labels:
@@ -252,7 +252,7 @@ class_queries:
         regex: "^sys/(?P<interface_type>[a-z]+)-\\[(?P<interface>[^\\]]+)\\]/"
 ```
 
-Now Copy Paste this into the config file.
+Now Copy/Paste this into the config file.
 
 Based on the service discovery we executed before we have all the required infos to run a query against a switch, the aci-exporter URL has the following format:
 
@@ -295,7 +295,7 @@ Selection between APIC or Switches is done by using different re-labeling config
 
 To add a new query follow these steps:
 
-- Develop a new ACI-Exporter query and test is with `curl` to ensure it returns the expected data
+- Develop a new aci-exporter query and test is with `curl` to ensure it returns the expected data
 - Add the query to one of the files in the [config.d](../charts/aci-monitoring-stack/config.d) folder or create a new file if your query dosen't belong to any of the existing categoris. 
 - add the query name in the `queries` list of the APIC or Switches inside the [ScrapeConfigs](../charts/aci-monitoring-stack/templates/prometheus/configmap-config.yaml).  
 
