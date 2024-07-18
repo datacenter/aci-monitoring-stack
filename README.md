@@ -21,6 +21,15 @@ The ACI-Monitoring-Stack integrates the following key components:
 
 - Pre-configured ACI data collections queries, alerts, and dashboards (Work In Progress): The ACI-Monitoring-Stack provides a solid foundation for monitoring an ACI fabric with its pre-defined queries, dashboards, and alerts. While these tools are crafted based on best practices to offer immediate insights into network performance, they are not exhaustive. The strength of the ACI-Monitoring-Stack lies in its community-driven approach. Users are invited to contribute their expertise by providing feedback, sharing custom solutions, and helping enhance the stack. Your input helps to refine and expand the stack's capabilities, ensuring it remains a relevant and powerful tool for network monitoring.
 
+# Demo Environment:
+
+Wanna take a look at the current Stack? Head to:
+
+https://64.104.255.11/
+
+user: guest
+password: guest
+
 # Your Stack
 
 Here you can see a high level diagram of the components used and how they interact together  
