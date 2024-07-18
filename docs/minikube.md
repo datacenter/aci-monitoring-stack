@@ -2,7 +2,7 @@
 
 This can be used to run aci-monitoring-stack locally (say on your laptop).
 
-By default minikube only provide access locally and this is an issue for logs ingestion however for a lab you can configure HAProxy to expose you Minikube instance over the Host IP Address. This implies that you should configure all your External Services as `NodePort` and configure HAProxy to send the traffic to the correct `NodePort`
+By default, minikube only provide access locally and this is an issue for logs ingestion however for a lab you can configure HAProxy to expose you Minikube instance over the Host IP Address. This implies that you should configure all your External Services as `NodePort` and configure HAProxy to send the traffic to the correct `NodePort`
 
 I have configured minikube with 4GB or RAM and 4 CPU and that was plenty to monitor a small 10 switch ACI Fabric. 
 
@@ -61,7 +61,7 @@ While installing Minikube I hit the following issues:
 
 ## minikube/podman wrong CNI Version
 
-If minikube dosen't start and complains about the wrong CNI version for bridge open /etc/cni/net.d/11-crio-ipv4-bridge.conflist and set "cniVersion": "0.4.0" from 1.0.0
+If minikube doesn't start and complains about the wrong CNI version for bridge open /etc/cni/net.d/11-crio-ipv4-bridge.conflist and set "cniVersion": "0.4.0" from 1.0.0
 
 ## Prometheus does not install under minikube/podman 
 
