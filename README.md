@@ -58,6 +58,9 @@ flowchart-elk
   V -->|No| SL
 ```
 
+# Stack Development
+If you want to contribute to this project star from [Here](docs/development.md)
+
 # Stack Deployment
 
 ## Pre Requisites
