@@ -17,7 +17,7 @@ The ACI-Monitoring-Stack integrates the following key components:
 
 - [Syslog-ng](https://github.com/syslog-ng/syslog-ng): is an open-source implementation of the Syslog protocol, its role in this stack is to translate syslog messages from RFC 3164 to 5424. This is needed because Promtail only support Syslog RFC 5424 over TCP and this capability is only available in ACI 6.1 and above.
 
-- [ACI-Exporter](https://github.com/opsdis/aci-exporter): A custom-built exporter that serves as the bridge between your Cisco ACI environment and the Prometheus monitoring ecosystem. The ACI-Exporter translates ACI-specific metrics into a format that Prometheus can ingest, ensuring that all crucial data points are captured and monitored effectively.
+- [aci-exporter](https://github.com/opsdis/aci-exporter): A Prometheus exporter that serves as the bridge between your Cisco ACI environment and the Prometheus monitoring ecosystem. The aci-exporter translates ACI-specific metrics into a format that Prometheus can ingest, ensuring that all crucial data points are captured and monitored effectively.
 
 - Pre-configured ACI data collections queries, alerts, and dashboards (Work In Progress): The ACI-Monitoring-Stack provides a solid foundation for monitoring an ACI fabric with its pre-defined queries, dashboards, and alerts. While these tools are crafted based on best practices to offer immediate insights into network performance, they are not exhaustive. The strength of the ACI-Monitoring-Stack lies in its community-driven approach. Users are invited to contribute their expertise by providing feedback, sharing custom solutions, and helping enhance the stack. Your input helps to refine and expand the stack's capabilities, ensuring it remains a relevant and powerful tool for network monitoring.
 
@@ -33,7 +33,7 @@ flowchart-elk
     PT["Promtail"]
     SL["Syslog-ng"]
     AM["Alertmanager"]
-    A["ACI Exporter"]
+    A["aci-exporter"]
     G--"PromQL"-->P
     G--"LogQL"-->L
     P-->AM
@@ -66,7 +66,7 @@ If you want to contribute to this project star from [Here](docs/development.md)
 ## Pre Requisites
 - Familiarity with Kubernetes: This installation guide is intended to assist with the setup of the ACI Monitoring stack and assumes prior familiarity with Kubernetes; it is not designed to provide instruction on Kubernetes itself.
 - A Kubernetes Cluster: Currently the stack has been tested on `Upstream Kubernetes 1.30.x` and `Minikube`.
-  - Persistent Volumes: 10G should be plenty for a small/demo environment. Many Storage provisioner support Volume expansion so should be easy to increase this post installation.
+  - Persistent Volumes: 10G should be plenty for a small/demo environment. Many storage provisioner support Volume expansion so should be easy to increase this post installation.
   - Ability to expose services for:
       - Access to the Grafana/Prometheus and Alert Manager dashboards: This will be ideally achieved via an `Ingress Controller`
         - (Optional) Wildcard DNS Entries for the ingress controller domain.
@@ -84,19 +84,19 @@ If you are installing on Minikube please follow the [Minikube Preparation Steps]
 
 ## Config Preparation
 
-The ACI Monitoring Stack is a combination of several [Charts](charts/aci-monitoring-stack/charts), if you are familiar with Helm you are aware of the struggle to propagate dynamic values to sub-charts. For example it is not possible to pass to a sub-chart the name of a service in a dynamic way. 
+The ACI Monitoring Stack is a combination of several [Charts](charts/aci-monitoring-stack/charts), if you are familiar with Helm you are aware of the struggle to propagate dynamic values to sub-charts. For example, it is not possible to pass to a sub-chart the name of a service in a dynamic way. 
 
 In order to simplify the user experience the `chart` comes with a few pre-configured parameters that are populated in the configurations of the various sub-charts. 
 
-For example the ACI Exporter Service Name is pre configured as `aci-exporter-svc` and this value is then passed to Prometheus as service Discovery URL.
+For example the aci-exporter Service Name is pre-configured as `aci-exporter-svc` and this value is then passed to Prometheus as service Discovery URL.
 
 All these values can be customized and if you need to you can refer to the [Values](charts/aci-monitoring-stack/values.yaml) file.
 
-*Note:* This is the first HELM char `camrossi` created and he is sure it can be improved. If you have suggestions they are extremely welcome! :) 
+*Note:* This is the first HELM char `camrossi` created, and he is sure it can be improved. If you have suggestions they are extremely welcome! :) 
 
-### ACI Exporter
+### The aci-exporter
 
-ACI Exporter is the bridge between your Cisco ACI environment and the Prometheus monitoring ecosystem, for it to works it needs to know:
+The aci-exporter is the bridge between your Cisco ACI environment and the Prometheus monitoring ecosystem, for it to works it needs to know:
 - `fabrics`: A list of fabrics and how to connect to the APICs.
   - Requires a **ReadOnly** **Admin** User
 - `service_discovery`: Configure if devices are reachable via Out Of Band (`oobMgmtAddr`) or InBand (`inbMgmtAddr`). 
@@ -189,7 +189,7 @@ Grafana is installed via its [own Chart](https://github.com/grafana/helm-charts/
 - The `ingress` config: External URL which can access Grafana.
 - Persistent Volume Capacity
 - (Optional) `adminPassword`: If not set will be auto generated and can be found in the `grafana` secret
-- (Optional) `viewers_can_edit`: This allows users with a `view only` role to modify the dashboards and access `Explorer` to execute queries against `Pormetheus` and `Loki`. However the user will not be able to save any changes.
+- (Optional) `viewers_can_edit`: This allows users with a `view only` role to modify the dashboards and access `Explorer` to execute queries against `Pormetheus` and `Loki`. However, the user will not be able to save any changes.
 - (Optional) `deploymentStrategy`: if Grafana `Persistent Volume` is of type `ReadWriteOnce` rolling updates will get stuck as the new pod cannot start before the old one releases the PVC. Setting `deploymentStrategy.type` to `Recreate` destroy the original pod before starting the new one.
 
 Below an example:
@@ -213,7 +213,7 @@ grafana:
 ```
 ### Syslog config
 
-The syslog config is the most complicated part as it relies on 3 components (`promtail`, `loki` and `syslog-ng`) with their own individual configs. Furthermore there are two issues we need to overcome:
+The syslog config is the most complicated part as it relies on 3 components (`promtail`, `loki` and `syslog-ng`) with their own individual configs. Furthermore, there are two issues we need to overcome:
 
 - The Syslog messages don't contain the ACI Fabric name: to be able to distinguish the messaged from one fabric to another the only solution is to use dedicated `external services` with unique `IP:Port` pair per Fabric.
 - Until ACI 6.1 we need `syslog-ng` between `ACI` and `Promtail` to convert from RFC 3164 to 5424
