@@ -1,7 +1,7 @@
 aci_exporter:
   image:
     repository: quay.io/camillo/aci-exporter
-    tag: issue_58
+    tag: v0.8.0
     pullPolicy: Always
   port: 9643
   # IF you change this URL YOU MUST Change the aciServiceDiscoveryURLs.sd value to match
