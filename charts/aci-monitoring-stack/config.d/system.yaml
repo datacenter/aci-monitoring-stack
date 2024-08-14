@@ -245,7 +245,7 @@ group_class_queries:
             value_calculation: "value / 100"
         labels:
           - property_name: fvAEPg.attributes.dn
-            regex: "^uni/tn-(?P<tenant>.*)/ap-(?P<app>.*)/epg-(?P<epg>.*)"
+            regex: "^uni/tn-(?P<tenant>.*)/(?:ap|mgmtp)-(?P<app>.*)/(?:epg|inb)-(?P<epg>.*)"
         staticlabels:
           - key: class
             value: fvAEPg
