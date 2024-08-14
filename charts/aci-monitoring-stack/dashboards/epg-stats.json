@@ -113,7 +113,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "topk($top,\n    sum by (fabric,tenant,app,epg,nodeid)\n    (\n        rate(aci_epg_rx_unicast_bytes_total{fabric=\"$fabric\",tenant=~\"$tenant\",app=~\"$app\",epg=~\"$epg\"}[$__rate_interval]) +\n        rate(aci_epg_rx_flood_bytes_total{fabric=\"$fabric\",tenant=~\"$tenant\",app=~\"$app\",epg=~\"$epg\"}[$__rate_interval]) + \n        rate(aci_epg_rx_multicast_bytes_total{fabric=\"$fabric\",tenant=~\"$tenant\",app=~\"$app\",epg=~\"$epg\"}[$__rate_interval])\n    )/1.25e+8\n)",
+          "expr": "topk($top,\n    round(sum by (fabric,tenant,app,epg,nodeid)\n    (\n        rate(aci_epg_rx_unicast_bytes_total{fabric=\"$fabric\",tenant=~\"$tenant\",app=~\"$app\",epg=~\"$epg\"}[$__rate_interval]) +\n        rate(aci_epg_rx_flood_bytes_total{fabric=\"$fabric\",tenant=~\"$tenant\",app=~\"$app\",epg=~\"$epg\"}[$__rate_interval]) + \n        rate(aci_epg_rx_multicast_bytes_total{fabric=\"$fabric\",tenant=~\"$tenant\",app=~\"$app\",epg=~\"$epg\"}[$__rate_interval])\n    )/1.25e+8, 0.00001)\n)",
           "hide": false,
           "interval": "",
           "legendFormat": "{{tenant}} - {{app}} - {{epg}}",
@@ -208,7 +208,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "topk($top,\n    sum by (fabric,tenant,app,epg,nodeid)\n    (\n        rate(aci_epg_tx_unicast_bytes_total{fabric=~\"$fabric\",tenant=~\"$tenant\",epg=~\"$epg\"}[$__rate_interval]) +\n        rate(aci_epg_tx_flood_bytes_total{fabric=~\"$fabric\",tenant=~\"$tenant\",epg=~\"$epg\"}[$__rate_interval]) + \n        rate(aci_epg_tx_multicast_bytes_total{fabric=~\"$fabric\",tenant=~\"$tenant\",epg=~\"$epg\"}[$__rate_interval])\n    )/1.25e+8\n)",
+          "expr": "topk($top,\n    round(sum by (fabric,tenant,app,epg,nodeid)\n    (\n        rate(aci_epg_tx_unicast_bytes_total{fabric=~\"$fabric\",tenant=~\"$tenant\",epg=~\"$epg\"}[$__rate_interval]) +\n        rate(aci_epg_tx_flood_bytes_total{fabric=~\"$fabric\",tenant=~\"$tenant\",epg=~\"$epg\"}[$__rate_interval]) + \n        rate(aci_epg_tx_multicast_bytes_total{fabric=~\"$fabric\",tenant=~\"$tenant\",epg=~\"$epg\"}[$__rate_interval])\n    )/1.25e+8, 0.0001)\n)",
           "hide": false,
           "interval": "",
           "legendFormat": "{{tenant}} - {{app}} - {{epg}}",
@@ -600,6 +600,6 @@
   "timezone": "",
   "title": "EPG Stats",
   "uid": "edur06blghg5cc",
-  "version": 2,
+  "version": 5,
   "weekStart": ""
 }
