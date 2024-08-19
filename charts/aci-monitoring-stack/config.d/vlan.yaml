@@ -37,15 +37,15 @@ class_queries:
         help: "Static binding info"
     labels:
       - property_name: fvAEPg.attributes.dn
-        regex: "^uni/tn-(?P<tenant>.*)/ap-(?P<app>.*)/epg-(?P<epg>.*)"
+        regex: "^uni/tn-(?P<tenant>.*)/(?:ap|mgmtp)-(?P<app>.*)/(?:epg|inb)-(?P<epg>.*)"
       - property_name: fvAEPg.attributes.[.*].attributes.tDn
         regex: "^topology/pod-(?P<podid>[1-9][0-9]*)/(protpaths|paths)-(?P<nodeid>[1-9][0-9].*)/pathep-\\[(?P<port>.+)\\]"
       - property_name: fvAEPg.attributes.[.*].attributes.encap
         regex: "^(?P<encap>.*)"
         
-  epg_port_vlan_binding:
+  epg_infos:
     class_name: vlanCktEp
-    query_parameter: '?order-by=vlanCktEp.dn&rsp-subtree-include=required&rsp-subtree-class=l2RsPathDomAtt&rsp-subtree=children'
+    query_parameter: '?order-by=vlanCktEp.dn&rsp-subtree-include=stats&rsp-subtree-class=l2RsPathDomAtt,l2IngrPkts5min,l2EgrPkts5min,l2IngrBytes5min,l2EgrBytes5min&rsp-subtree=children'
     metrics:
       - name: epg_port_vlan_binding
         value_name: vlanCktEp.children.[l2RsPathDomAtt].attributes.operSt
@@ -55,9 +55,74 @@ class_queries:
           'down': 1
           'up': 2
           'link-up': 3
+      - name: epg_rx_flood
+        value_name: vlanCktEp.children.[l2IngrBytes5min].attributes.floodCum
+        type: counter
+        unit: "bytes"
+      - name: epg_rx_multicast
+        value_name: vlanCktEp.children.[l2IngrBytes5min].attributes.multicastCum
+        type: counter
+        unit: "bytes"
+      - name: epg_rx_unicast
+        value_name: vlanCktEp.children.[l2IngrBytes5min].attributes.unicastCum
+        type: counter
+        unit: "bytes"
+      - name: epg_rx_drop
+        value_name: vlanCktEp.children.[l2IngrBytes5min].attributes.dropCum
+        type: counter
+        unit: "bytes"
+      - name: epg_tx_flood
+        value_name: vlanCktEp.children.[l2EgrBytes5min].attributes.floodCum
+        type: counter
+        unit: "bytes"
+      - name: epg_tx_multicast
+        value_name: vlanCktEp.children.[l2EgrBytes5min].attributes.multicastCum
+        type: counter
+        unit: "bytes"
+      - name: epg_tx_unicast
+        value_name: vlanCktEp.children.[l2EgrBytes5min].attributes.unicastCum
+        type: counter
+        unit: "bytes"
+      - name: epg_tx_drop
+        value_name: vlanCktEp.children.[l2EgrBytes5min].attributes.dropCum
+        type: counter
+        unit: "bytes"
+      - name: epg_rx_flood
+        value_name: vlanCktEp.children.[l2IngrPkts5min].attributes.floodCum
+        type: counter
+        unit: "pkts"
+      - name: epg_rx_multicast
+        value_name: vlanCktEp.children.[l2IngrPkts5min].attributes.multicastCum
+        type: counter
+        unit: "pkts"
+      - name: epg_rx_unicast
+        value_name: vlanCktEp.children.[l2IngrPkts5min].attributes.unicastCum
+        type: counter
+        unit: "pkts"
+      - name: epg_rx_drop
+        value_name: vlanCktEp.children.[l2IngrPkts5min].attributes.dropCum
+        type: counter
+        unit: "pkts"
+      - name: epg_tx_flood
+        value_name: vlanCktEp.children.[l2EgrPkts5min].attributes.floodCum
+        type: counter
+        unit: "pkts"
+      - name: epg_tx_multicast
+        value_name: vlanCktEp.children.[l2EgrPkts5min].attributes.multicastCum
+        type: counter
+        unit: "pkts"
+      - name: epg_tx_unicast
+        value_name: vlanCktEp.children.[l2EgrPkts5min].attributes.unicastCum
+        type: counter
+        unit: "pkts"
+      - name: epg_tx_drop
+        value_name: vlanCktEp.children.[l2EgrPkts5min].attributes.dropCum
+        type: counter
+        unit: "pkts"
+
     labels:
       - property_name: vlanCktEp.attributes.epgDn
-        regex: "^uni/tn-(?P<tenant>.*)/ap-(?P<app>.*)/epg-(?P<epg>.*)"
+        regex: "^uni/tn-(?P<tenant>.*)/(?:ap|mgmtp)-(?P<app>.*)/(?:epg|inb)-(?P<epg>.*)"
       - property_name: vlanCktEp.attributes.encap
         regex: "^vlan-(?P<vlan>.*)"
       - property_name: vlanCktEp.attributes.pcTag
@@ -79,7 +144,7 @@ class_queries:
           'link-up': 3
     labels:
       - property_name: vxlanCktEp.attributes.epgDn
-        regex: "^uni/tn-(?P<tenant>.*)/ap-(?P<app>.*)/epg-(?P<epg>.*)"
+        regex: "^uni/tn-(?P<tenant>.*)/(?:ap|mgmtp)-(?P<app>.*)/(?:epg|inb)-(?P<epg>.*)"
       - property_name: vxlanCktEp.attributes.encap
         regex: "^vxlan-(?P<vxlan>.*)"
       - property_name: vxlanCktEp.attributes.pcTag
