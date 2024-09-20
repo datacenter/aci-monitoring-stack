@@ -60,9 +60,16 @@ backend promtail-site3
 While installing Minikube I hit the following issues:
 
 ## minikube/podman wrong CNI Version
+See https://github.com/kubernetes/minikube/issues/17754
+For me this fixed it:
+```
+#sudo apt list --all-versions podman
+podman/jammy-updates,jammy-security,now 3.4.4+ds1-1ubuntu1.22.04.2 amd64 [installed]  <=== Seems is bad
+podman/jammy 3.4.4+ds1-1ubuntu1 amd64
 
-If minikube doesn't start and complains about the wrong CNI version for bridge open /etc/cni/net.d/11-crio-ipv4-bridge.conflist and set "cniVersion": "0.4.0" from 1.0.0
-
+#sudo apt install podman=3.4.4+ds1-1ubuntu1
+Reading package lists... Done
+```
 ## Prometheus does not install under minikube/podman 
 
 Log into minikube with `minikube ssh`.
