@@ -29,7 +29,7 @@ data:
             # DO NOT INSERT SPACES and use \ for next line or aci-exporter will not be able to parse the queries
           queries:
             - "health,fabric_node_info,max_capacity,max_global_pctags,\
-              vlans,static_binding_info,node_count,object_count,\
+              vlans,static_binding_info,node_count,object_count,fault_insts,\
               ps_power_usage,apic_hw_sensors,controller_topsystem"
         scheme: http
         http_sd_configs:

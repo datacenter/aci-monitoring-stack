@@ -74,6 +74,36 @@ class_queries:
         # This is used as a workaround so I can set the nodeid == fabric to detect fabric wide metrics
         regex: "^uni/(?P<nodeid>.*)/compcat-default"
 
+  fault_insts:
+    class_name: faultInst
+    query_parameter: '?order-by=faultInst.dn&query-target-filter=and(not(wcard(faultInst.dn,"__ui_")))'
+    metrics:
+      - name: faults
+        value_name: faultInst.attributes.lastTransition
+        # Use the time the profile was applied
+        value_regex_transformation: "(?P<lastTransition>.*)"
+        value_calculation: "lastTransition"
+        help: Returns the faults last transition time
+    labels:
+      - property_name: faultInst.attributes.ack
+        regex: "(?P<ack>.*)"
+      - property_name: faultInst.attributes.dn
+        regex: "(?P<dn>.*)"
+      - property_name: faultInst.attributes.cause
+        regex: "(?P<cause>.*)"
+      - property_name: faultInst.attributes.created
+        regex: "(?P<created>.*)"
+      - property_name: faultInst.attributes.descr
+        regex: "(?P<descr>.*)"
+      - property_name: faultInst.attributes.code
+        regex: "(?P<code>.*)"
+      - property_name: faultInst.attributes.severity
+        regex: "(?P<severity>.*)"
+      - property_name: faultInst.attributes.domain
+        regex: "(?P<domain>.*)"
+      - property_name: faultInst.attributes.type
+        regex: "(?P<type>.*)"
+
 
 compound_queries:
   object_count:
