@@ -21,15 +21,6 @@ The ACI-Monitoring-Stack integrates the following key components:
 
 - Pre-configured ACI data collections queries, alerts, and dashboards (Work In Progress): The ACI-Monitoring-Stack provides a solid foundation for monitoring an ACI fabric with its pre-defined queries, dashboards, and alerts. While these tools are crafted based on best practices to offer immediate insights into network performance, they are not exhaustive. The strength of the ACI-Monitoring-Stack lies in its community-driven approach. Users are invited to contribute their expertise by providing feedback, sharing custom solutions, and helping enhance the stack. Your input helps to refine and expand the stack's capabilities, ensuring it remains a relevant and powerful tool for network monitoring.
 
-# Demo Environment:
-
-Wanna take a look at the current Stack? Head to:
-
-https://64.104.255.11/
-
-user: guest
-password: guest
-
 # Your Stack
 
 To gain a comprehensive understanding of the ACI Monitoring Stack and its components it is helpful to break down the stack into separate functions. Each function focuses on a different aspect of monitoring the Cisco Application Centric Infrastructure (ACI) environment.
@@ -119,7 +110,8 @@ flowchart-elk LR
   P --> AM 
   AM --> N
 ```
+# [Demo Environment Access and Use](docs/demo-environment.md)
 
-# Click here for the [Stack Deployment](docs/development.md) Guide
+# [Stack Deployment Guide](docs/development.md)
 
-# Click here for the [Stack Development](docs/development.md) Guide
+# [Stack Development Guide](docs/development.md)
