@@ -112,6 +112,6 @@ flowchart-elk LR
 ```
 # [Demo Environment Access and Use](docs/demo-environment.md)
 
-# [Stack Deployment Guide](docs/development.md)
+# [Stack Deployment Guide](docs/deployment.md)
 
 # [Stack Development Guide](docs/development.md)
