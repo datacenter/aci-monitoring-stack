@@ -263,7 +263,7 @@ syslog:
 ```
 
 ### ACI Syslog Config
-If you need a reminder on how to configure ACI Syslog take a look [Here](docs/syslog.md)
+If you need a reminder on how to configure ACI Syslog take a look [Here](syslog.md)
 
 ## Example Config for 4 Fabrics
 Here you can see an [Example Config for 4 Fabrics](docs/4-fabric-example.yaml)
