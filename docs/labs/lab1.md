@@ -44,12 +44,12 @@ This is a good dashboard to understand how Grafana dashboards are built, so let'
 - From the Metric Drop Down menu select `aci_faults` and click `Run Query` this will display a Graph, in the legend you can see that for each metric we have infos about the Fabric, cause, description etc... the Metric value itself (the 1.7Bil) is the Unix Time Stamp of the last transition time the fault.
   
 ![alt text](images/lab1/TimeSeries.png)
-However This is not a very good visualization for this type of data, we can see interesting data in the legend but a time series is really not the right visualization as we are interested in a list of faults aka a table!
+However this is not a very good visualization for this type of data, we can see interesting data in the legend but a time series is really not the right visualization as we are interested in a list of faults aka a table!
 
-- To switch to a `Table` view we need two steps:
-  -  Select the `Table Format` for our query: Go to `Options` --> `Format` --> Select `Table`
+To switch to a `Table` view we need two steps:
+-  Select the `Table Format` for our query: Go to `Options` --> `Format` --> Select `Table`
 <img src=images/lab1/queryformat.png width="500">
-  -  Select the `Table` from the Visualization drop down Menu by cluicking on `Time Series` and then picking `Table` (take a moment to see how many options there are here)
+-  Select the `Table` from the Visualization drop down Menu by cluicking on `Time Series` and then picking `Table` (take a moment to see how many options there are here)
 
       <img src=images/lab1/Visualization.png width="500">
 
@@ -71,7 +71,7 @@ Select `Transform Data` --> `Add Transformation` --> `Organize fields by name`
 ![alt text](images/lab1/oganize.png)
 Here you can 
 - Change the ordering of the fields, by drag them by the vertical dots on the left
-- Hide them, by clicking on the "eye` symbol
+- Hide them, by clicking on the `eye` symbol
 - Rename them by adding text in the empty box on the right of the field name
 
 You are free to sort things as you please but I would recommend to at least:
@@ -96,7 +96,7 @@ This is due to the fact that the epoch is expected in milliseconds since 1970 bu
 
 ## Sort by:
 
-Select `Add another transformation` --> `Convert field type`
+Select `Add another transformation` --> `Sort By`
 - Field: `Last Transition`
 - Reverse: Enabled
 
