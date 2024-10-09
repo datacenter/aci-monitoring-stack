@@ -1,3 +1,4 @@
+{{- if $.Values.loki.enabled }}
 {{- $files := .Files.Glob "alerts/loki/*.yaml" }}
 {{- if $files }}
 apiVersion: v1
@@ -19,5 +20,6 @@ items:
 {{ include "aci-monitoring-stack.labels" $ | indent 6 }}
   data:
     {{ $dashboardName }}.yaml: {{ $.Files.Get $path | toYaml | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
