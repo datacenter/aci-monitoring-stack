@@ -157,6 +157,24 @@ promtail:
             - source_labels:
                 - __syslog_message_hostname
               target_label: switch
+          pipeline_stages:
+            # ACI log levels don't map to the Grafana hard coded one so to get coloring right I just map the ACI levels to Grafana ones.
+            - regex: 
+                expression: '\[(?P<level>critical|major|minor|warning|cleared|info)\]'
+            - replace:
+                expression: '^(major)$'
+                source: level
+                replace: 'error'
+            - replace:
+                expression: '^(minor)$'
+                source: level
+                replace: 'warning'
+            - replace:
+                expression: '^(cleared)$'
+                source: level
+                replace: 'info'
+            - labels:
+                level:
           {{- end }}
   daemonset:
     enabled: false
@@ -209,6 +227,8 @@ loki:
       uid: ""
     commonConfig:
       replication_factor: 1
+    limits_config:
+      discover_log_levels: false
     schemaConfig:
       configs:
         - from: 2024-04-01
