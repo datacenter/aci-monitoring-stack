@@ -104,6 +104,7 @@ loki:
       size: 2Gi
 
 syslog:
+  enabled: true
   services:
     nsd-backbone:
         name: nsd-backbone

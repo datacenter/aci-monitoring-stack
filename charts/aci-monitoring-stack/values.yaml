@@ -193,6 +193,7 @@ promtail:
       - 'secret'
       - 'downwardAPI'
 syslog:
+  enabled: false
   image:
     repository: balabit/syslog-ng
     tag: 4.7.1
