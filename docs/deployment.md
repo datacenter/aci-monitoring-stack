@@ -266,7 +266,7 @@ syslog:
 If you need a reminder on how to configure ACI Syslog take a look [Here](syslog.md)
 
 ## Example Config for 4 Fabrics
-Here you can see an [Example Config for 4 Fabrics](docs/4-fabric-example.yaml)
+Here you can see an [Example Config for 4 Fabrics](4-fabric-example.yaml)
 
 # Chart Deployment
 
@@ -276,3 +276,4 @@ Once the configuration file is generated i.e.: `aci-mon-stack-config.yaml` Helm 
 helm repo add aci-monitoring-stack https://datacenter.github.io/aci-monitoring-stack
 helm repo update
 helm -n aci-mon-stack upgrade --install --create-namespace aci-mon-stack aci-monitoring-stack/aci-monitoring-stack -f aci-mon-stack-config.yaml
+```

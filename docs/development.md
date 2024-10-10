@@ -296,7 +296,7 @@ Selection between APIC or Switches is done by using different re-labeling config
 To add a new query follow these steps:
 
 - Develop a new aci-exporter query and test is with `curl` to ensure it returns the expected data
-- Add the query to one of the files in the [config.d](../charts/aci-monitoring-stack/config.d) folder or create a new file if your query dosen't belong to any of the existing categoris. 
+- Add the query to one of the files in the [config.d](../charts/aci-monitoring-stack/config.d) folder or create a new file if your query doesn't belong to any of the existing categories. 
 - add the query name in the `queries` list of the APIC or Switches inside the [ScrapeConfigs](../charts/aci-monitoring-stack/templates/prometheus/configmap-config.yaml).  
 
 Below a scrape config example: 

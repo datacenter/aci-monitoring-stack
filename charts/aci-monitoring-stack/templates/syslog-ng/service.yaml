@@ -1,3 +1,4 @@
+{{- if $.Values.syslog.enabled }}
 {{- range $key, $values := .Values.syslog.services }}
 ---
 apiVersion: v1
@@ -43,4 +44,5 @@ spec:
       {{- end }}
   selector:
     app.kubernetes.io/component: {{ $.Release.Name }}-syslog-ng
+{{- end }}
 {{- end }}

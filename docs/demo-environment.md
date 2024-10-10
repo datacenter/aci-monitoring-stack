@@ -24,7 +24,7 @@ All the Dashboards are located in the `ACI` Folder in the `Dashboards` section o
 These dashboards are using `Prometheus` as data source meaning the data we are visualizing came from an ACI Managed Object and was translated by the `aci-exporter`
 
 ### ACI Faults
-This dashboard is a 1:1 copy of the faults that are present inside ACI. The main advantages copmpared to looking at the faults in the ACI UI are:
+This dashboard is a 1:1 copy of the faults that are present inside ACI. The main advantages compared to looking at the faults in the ACI UI are:
 -  the ability to aggregating Faults from Multiple Fabrics in a single table
 -  allowing advanced sorting and filtering
 

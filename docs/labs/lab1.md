@@ -1,6 +1,8 @@
 # Overview 
 
-This is an simple lab that that builds a minimal dashboard showing data in a Table Format
+This is an simple lab that builds a minimal dashboard showing data in a Table Format. 
+
+**This labs assumes you are familiar with the [Demo Environment](../demo-environment.md)**
 
 # Access 
 
@@ -49,7 +51,7 @@ However this is not a very good visualization for this type of data, we can see 
 To switch to a `Table` view we need two steps:
 -  Select the `Table Format` for our query: Go to `Options` --> `Format` --> Select `Table`
 <img src=images/lab1/queryformat.png width="500">
--  Select the `Table` from the Visualization drop down Menu by cluicking on `Time Series` and then picking `Table` (take a moment to see how many options there are here)
+-  Select the `Table` from the Visualization drop down Menu by clicking on `Time Series` and then picking `Table` (take a moment to see how many options there are here)
 
       <img src=images/lab1/Visualization.png width="500">
 
@@ -149,7 +151,7 @@ To create the `$fabric` variables to select our `sites` follow these steps:
   - Name: `fabric`
   - Display Name: `Fabric`
   - Show on dashboard: `Labels and Values`
-  - Data source: `Promethesu`
+  - Data source: `Prometheus`
   - Query
     - Query type: `Labels Values`
     - Label: `fabric` **Warning** select the `fabric` label **DO NOT** select `$fabric`
@@ -161,3 +163,6 @@ To create the `$fabric` variables to select our `sites` follow these steps:
 Now your dashboard will have a new drop down menu where you can dynamically select the fabric to display!
 
 <img src=images/lab1/label-filtering-dropdown.png width="600">
+
+# The End
+This concludes Lab1, feel free to play around more with this dashboard if you want or you can proceed to [Lab2](lab2.md)

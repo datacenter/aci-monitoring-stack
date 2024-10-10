@@ -1,3 +1,4 @@
+{{- if $.Values.syslog.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,3 +34,4 @@ spec:
       - name: {{ $.Release.Name }}-syslog-ng-config
         configMap:
           name: {{ $.Release.Name }}-syslog-ng-config
+{{- end }}

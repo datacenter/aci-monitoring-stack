@@ -138,6 +138,8 @@ grafana:
         allowUiUpdates: true
     alerts:
       enabled: false
+    rbac:
+      create: false
 
 promtail:
   enabled: true
@@ -229,6 +231,7 @@ loki:
       replication_factor: 1
     limits_config:
       discover_log_levels: false
+      discover_service_name: []
     schemaConfig:
       configs:
         - from: 2024-04-01
