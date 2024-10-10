@@ -1,7 +1,7 @@
 class_queries:
   node_bgp_peers:
     class_name: bgpPeer
-    query_parameter: '?order-by=bgpPeer.dn&rsp-subtree=children&rsp-subtree-class=bgpPeerEntry'
+    query_parameter: '?order-by=bgpPeer.dn&rsp-subtree=children&rsp-subtree-class=bgpPeerEntry&rsp-subtree-include=required'
     metrics:
       - name: bgp_peers
         # As metric I am saving the last time the peer conenction changed state
