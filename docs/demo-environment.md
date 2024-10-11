@@ -11,12 +11,29 @@ The guest user is able to modify the dashboards and run `Explore` queries howeve
 
 # Exploring the ACI Monitoring Stack
 
-In this section I am gonna guide you trough the available dashboards and how to use them.
+In this section I am going to guide you trough the available already built dashboards and how to use them. We will cover two types of dashboards based on data provided by Prometheus for fault and alerts data and Loki for syslog data. 
 
 *Note:* Grafana support building dashboard with data coming from Multiple data source but for the moment, the ACI Monitoring stack does not make use of such capability. 
 
 All the Dashboards are located in the `ACI` Folder in the `Dashboards` section of the UI:
 ![dashboards](images/dashboards.png)
+
+
+The stack is pre-provisioned with the following Dashboards. Feel free to explore the ones that are of interest.
+<!-- no toc -->
+- [Prometheus backed Dashboards](#prometheus-backed-dashboards)
+  - [ACI Faults](#aci-faults)
+  - [EPG Explore](#epg-explore)
+  - [EPG Stats](#epg-stats)
+  - [Fabric Capacity](#fabric-capacity)
+  - [Node Capacity](#node-capacity)
+  - [Node Details](#node-details)
+  - [Nodes Interfaces](#nodes-interfaces)
+  - [Power Usage](#power-usage)
+  - [Routing Protocols](#routing-protocols)
+  - [Vlans](#vlans)
+- [Loki backed Dashboards](#loki-backed-dashboards)
+  - [Contract Drops Logs](#contract-drops-logs)
 
 
 ## Prometheus backed Dashboards
@@ -111,4 +128,4 @@ These dashboards are using `Loki` as data source meaning the data we are visuali
 
 This dashboard parses the logs received by the switches and extract infos on the Contract Drop Logs. This requires a specific [config](syslog.md) on ACI and is limited to 500 Messages/s per switch
 
-
+[Next - Lab1](labs/lab1.md)

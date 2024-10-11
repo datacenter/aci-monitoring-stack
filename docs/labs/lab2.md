@@ -74,4 +74,4 @@ The result will be something similar to what you can see below, feel free to use
 ![alt text](images/lab2/ui-filter-result.png)
 
 # The End
-This concludes Lab2, feel free to play around more with this dashboard if you want or you can proceed to [Lab3](lab3.md)
+This concludes Lab2, feel free to play around more with this dashboard if you want or you can proceed to [DMZ Deployment](dmz-deploy.md) instructions

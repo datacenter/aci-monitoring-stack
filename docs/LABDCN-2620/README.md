@@ -7,7 +7,7 @@ DMZ credentials will be available from the eXpo portal.
 
 ## Task 1 - Getting Familiar with the ACI Monitoring Stack
 
-If this is your first time learning about the ACI monitoring stack you should start with the [README](../../README.md) that provides an overview of the Stack Architecture.
+If this is your first time learning about the ACI monitoring stack you should start with the [Overview](overview.md) that provides an overview of the Stack Architecture.
 You do not need to deep dive in the details, unless you want to, but is good to have a generic understanding of the components used in the Stack.
 
 Next head over the [Demo Environment](../demo-environment.md) documentation, as you read this section explore the dashboard that are available in the Demo Environment.
