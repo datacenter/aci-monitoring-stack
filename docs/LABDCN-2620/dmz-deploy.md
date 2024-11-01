@@ -1,9 +1,12 @@
 # Overview 
 
-In this lab we are going to deploy the ACI Monitoring Stack in the DMZ environment. The DMZ environment is already pre-configured with a K8s cluster that provides:
+In this lab we are going to deploy the ACI Monitoring Stack in a DMZ environment. The DMZ environment is already pre-configured with a Kubernetes cluster that provides:
 
 - An ingress controller to expose services via HTTPS
 - Persistent Storage
+
+Note that this Task we will be configuring a simplified version and will not be enabling syslog.
+
 
 ## Connect to the Kubernetes Cluster
 

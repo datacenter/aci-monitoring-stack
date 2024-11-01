@@ -1,6 +1,16 @@
 
 # Stack Deployment
 
+The main Deployment workflow will consist in two steps:
+
+- Configuration preparation for Stack components:
+  - ACI-exporter
+  - Prometheus and alertmanager
+  - Grafana
+  - Syslog-ng
+  - Promtail
+- Deployment using HELM
+
 ## Pre Requisites
 - Familiarity with Kubernetes: This installation guide is intended to assist with the setup of the ACI Monitoring stack and assumes prior familiarity with Kubernetes; it is not designed to provide instruction on Kubernetes itself.
 - A Kubernetes Cluster: Currently the stack has been tested on `Upstream Kubernetes 1.30.x` `Minikube` and `k3s`
@@ -17,8 +27,6 @@
 
 ## Installation
 
-If you are installing on Minikube please follow the [Minikube Preparation Steps](docs/minikube.md) and then **come back here.**
-
 ## Config Preparation
 
 The ACI Monitoring Stack is a combination of several [Charts](charts/aci-monitoring-stack/charts), if you are familiar with Helm you are aware of the struggle to propagate dynamic values to sub-charts. For example, it is not possible to pass to a sub-chart the name of a service in a dynamic way. 
@@ -27,7 +35,7 @@ In order to simplify the user experience the `chart` comes with a few pre-config
 
 For example the aci-exporter Service Name is pre-configured as `aci-exporter-svc` and this value is then passed to Prometheus as service Discovery URL.
 
-All these values can be customized and if you need to you can refer to the [Values](charts/aci-monitoring-stack/values.yaml) file.
+All these values can be customized and if you need to you can refer to the [Values](../charts/aci-monitoring-stack/values.yaml) file.
 
 *Note:* This is the first HELM char `camrossi` created, and he is sure it can be improved. If you have suggestions they are extremely welcome! :) 
 
@@ -117,7 +125,7 @@ prometheus:
                   credentials: "<credentials>"
 ```
 
-If you use Webex here some [config steps](docs/webex.md) for you!
+If you use Webex here some [config steps](webex.md) for you!
 
 ### Grafana
 

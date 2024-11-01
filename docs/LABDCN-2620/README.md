@@ -22,6 +22,6 @@ Next head over the [Demo Environment](../demo-environment.md) documentation, as 
 
 ## Task 4 - Deploy the Monitoring Stack (Requires VPN Access)
 
-The ACI Monitoring Stack can be deploy on any Kubernetes cluster by following the [Deployment](../deployment.md) instructions. Before proceeding you should familiarize yourself by reading the Deployment guide however for this lab I am providing a pre-configured environment where no major configuration will be required.
+The ACI Monitoring Stack can be deployed on any Kubernetes cluster. For this lab, I am providing a pre-configured Kubernetes environment where no major configuration will be required. 
 
-[DMZ Deployment](dmz-deploy.md) instructions
+Before proceeding with this tasks I'd suggest you familiarize yourself by reading the [Deployment](../deployment.md) which contains the details on how to setup the ACI Monitoring Stack from scratch however for this Task you should follow the [DMZ Deployment](dmz-deploy.md) instructions.
