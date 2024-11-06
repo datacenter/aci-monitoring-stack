@@ -21,6 +21,17 @@ class_queries:
         regex: "^uni/tn-(?P<epg_tenant>.*)/ap-(?P<app>.*)/epg-(?P<epg>.*)/rsbd"
       - property_name: fvRsBd.attributes.tDn
         regex: "^uni/tn-(?P<bd_tenant>.*)/BD-(?P<bd_name>.*)"
+  inb_epg_to_bd:
+    class_name: mgmtRsMgmtBD
+    query_parameter: '?order-by=mgmtRsMgmtBD.dn'
+    metrics:
+      - name: inb_epg_to_bd
+        value_name: mgmtRsMgmtBD.attributes.uid
+    labels:
+      - property_name: mgmtRsMgmtBD.attributes.dn
+        regex: "^uni/tn-(?P<epg_tenant>.*)/mgmtp-(?P<app>.*)/inb-(?P<epg>.*)/rsmgmtBD"
+      - property_name: mgmtRsMgmtBD.attributes.tDn
+        regex: "^uni/tn-(?P<bd_tenant>.*)/BD-(?P<bd_name>.*)"
 
   bd_to_vrf:
     class_name: fvRtCtx

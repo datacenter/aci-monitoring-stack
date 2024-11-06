@@ -28,7 +28,7 @@ data:
             # List of the queries to execute on the fabric level. They need to match the aci-exporter config
             # DO NOT INSERT SPACES and use \ for next line or aci-exporter will not be able to parse the queries
           queries:
-            - "health,fabric_node_info,max_capacity,max_global_pctags,subnets,epg_to_bd,bd_to_vrf,\
+            - "health,fabric_node_info,max_capacity,max_global_pctags,subnets,epg_to_bd,inb_epg_to_bd,bd_to_vrf,\
               vlans,static_binding_info,node_count,object_count,fault_insts,\
               ps_power_usage,apic_hw_sensors,controller_topsystem"
         scheme: http

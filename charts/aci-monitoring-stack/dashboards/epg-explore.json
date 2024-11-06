@@ -24,6 +24,123 @@
   "panels": [
     {
       "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Maps a Subnet to a BD and EPG",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.2.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "  (\n        aci_bd_to_vrf{fabric=\"$fabric\"}\n      + on (fabric, bd_name, bd_tenant) group_right (vrf_name, vrf_tenant)\n        (\n            aci_subnets{fabric=\"$fabric\",subnet=\"$subnet\"}\n          + on (fabric, bd_name, bd_tenant) group_right ()\n            (aci_inb_epg_to_bd{fabric=\"$fabric\"} or aci_epg_to_bd{fabric=\"$fabric\"})\n        )\n    >=\n      0\n  )\nor on ()\n  (\n    label_replace(\n        aci_subnets{fabric=\"$fabric\",subnet=\"$subnet\"}\n      + on (fabric, bd_name, bd_tenant) group_right ()\n        (aci_inb_epg_to_bd{fabric=\"$fabric\"} or aci_epg_to_bd{fabric=\"$fabric\"}),\n      \"vrf_name\",\n      \"NO VRF\",\n      \"vrf_name\",\n      \".*\"\n    )\n  )",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Subnets",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "aci": true,
+              "fabric": true,
+              "instance": true,
+              "job": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "Time": 1,
+              "Value": 12,
+              "aci": 2,
+              "app": 4,
+              "bd_name": 7,
+              "bd_tenant": 6,
+              "epg": 5,
+              "epg_tenant": 3,
+              "fabric": 0,
+              "instance": 10,
+              "job": 11,
+              "vrf_name": 9,
+              "vrf_tenant": 8
+            },
+            "renameByName": {
+              "app": "App",
+              "bd_name": "BD",
+              "bd_tenant": "BD Tenant",
+              "epg": "EPG",
+              "epg_tenant": "EPG Tenant",
+              "vrf_name": "VRF",
+              "vrf_tenant": "VRF Tenant"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
@@ -73,7 +190,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 8
       },
       "id": 1,
       "options": {
@@ -215,7 +332,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 17
       },
       "id": 2,
       "options": {
@@ -303,123 +420,6 @@
         }
       ],
       "type": "table"
-    },
-    {
-      "datasource": {
-        "default": true,
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Maps a Subnet to a BD and EPG",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "inspect": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 20
-      },
-      "id": 3,
-      "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true
-      },
-      "pluginVersion": "11.2.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "  (\n        aci_bd_to_vrf\n      + on (fabric, bd_name, bd_tenant) group_right (vrf_name, vrf_tenant)\n        (\n            aci_subnets{fabric=\"$fabric\",subnet=\"$subnet\"}\n          + on (fabric, bd_name, bd_tenant) group_right ()\n            aci_epg_to_bd\n        )\n    >=\n      0\n  )\nor on ()\n  (\n    label_replace(\n        aci_subnets{fabric=\"$fabric\",subnet=\"$subnet\"}\n      + on (fabric, bd_name, bd_tenant) group_right ()\n        aci_epg_to_bd,\n      \"vrf_name\",\n      \"NO VRF\",\n      \"vrf_name\",\n      \".*\"\n    )\n  )",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "Subnets",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "Value": true,
-              "aci": true,
-              "fabric": true,
-              "instance": true,
-              "job": true
-            },
-            "includeByName": {},
-            "indexByName": {
-              "Time": 1,
-              "Value": 12,
-              "aci": 2,
-              "app": 4,
-              "bd_name": 7,
-              "bd_tenant": 6,
-              "epg": 5,
-              "epg_tenant": 3,
-              "fabric": 0,
-              "instance": 10,
-              "job": 11,
-              "vrf_name": 9,
-              "vrf_tenant": 8
-            },
-            "renameByName": {
-              "app": "App",
-              "bd_name": "BD",
-              "bd_tenant": "BD Tenant",
-              "epg": "EPG",
-              "epg_tenant": "EPG Tenant",
-              "vrf_name": "VRF",
-              "vrf_tenant": "VRF Tenant"
-            }
-          }
-        }
-      ],
-      "type": "table"
     }
   ],
   "refresh": "",
@@ -432,8 +432,8 @@
       {
         "current": {
           "selected": true,
-          "text": "fab1",
-          "value": "fab1"
+          "text": "fab2",
+          "value": "fab2"
         },
         "datasource": {
           "type": "prometheus",
@@ -490,10 +490,10 @@
         "current": {
           "selected": true,
           "text": [
-            "FileServer"
+            "shared-services"
           ],
           "value": [
-            "FileServer"
+            "shared-services"
           ]
         },
         "datasource": {
@@ -556,10 +556,10 @@
         "current": {
           "selected": true,
           "text": [
-            "7536649"
+            "7798784"
           ],
           "value": [
-            "7536649"
+            "7798784"
           ]
         },
         "datasource": {
@@ -588,8 +588,8 @@
       {
         "current": {
           "selected": false,
-          "text": "192.168.100.1/24",
-          "value": "192.168.100.1/24"
+          "text": "1.1.1.254/24",
+          "value": "1.1.1.254/24"
         },
         "datasource": {
           "type": "prometheus",
@@ -608,7 +608,7 @@
           "query": "label_values(aci_subnets{fabric=\"$fabric\"},subnet)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -617,13 +617,13 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "EPG Explore",
   "uid": "a4f7ea75-6ef6-4639-809a-755684e11ac1",
-  "version": 8,
+  "version": 11,
   "weekStart": ""
 }
