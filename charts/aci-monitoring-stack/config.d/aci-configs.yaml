@@ -1,0 +1,36 @@
+#This file is used to ingest the APIC configs to then analyse/display it inside Grafana. 
+class_queries:
+  subnets:
+    class_name: fvSubnet
+    query_parameter: '?order-by=fvSubnet.dn'
+    metrics:
+      - name: subnets
+        value_name: fvSubnet.attributes.uid
+    labels:
+      - property_name: fvSubnet.attributes.dn
+        regex: "^uni/tn-(?P<bd_tenant>.*)/BD-(?P<bd_name>.*)/subnet-\\[(?P<subnet>.*)\\]"
+
+  epg_to_bd:
+    class_name: fvRsBd
+    query_parameter: '?order-by=fvRsBd.dn'
+    metrics:
+      - name: epg_to_bd
+        value_name: fvRsBd.attributes.uid
+    labels:
+      - property_name: fvRsBd.attributes.dn
+        regex: "^uni/tn-(?P<epg_tenant>.*)/ap-(?P<app>.*)/epg-(?P<epg>.*)/rsbd"
+      - property_name: fvRsBd.attributes.tDn
+        regex: "^uni/tn-(?P<bd_tenant>.*)/BD-(?P<bd_name>.*)"
+
+  bd_to_vrf:
+    class_name: fvRtCtx
+    query_parameter: '?order-by=fvRtCtx.dn'
+    metrics:
+      - name: bd_to_vrf
+        value_name: fvRtCtx.attributes.status
+        value_transform: 
+          '' : 0
+    labels:
+      - property_name: fvRtCtx.attributes.dn
+        regex: "^uni/tn-(?P<vrf_tenant>.*)/ctx-(?P<vrf_name>.*)/rtctx-\\[uni/tn-(?P<bd_tenant>.*)/BD-(?P<bd_name>.*)\\]"
+

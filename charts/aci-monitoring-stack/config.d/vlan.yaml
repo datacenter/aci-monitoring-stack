@@ -57,66 +57,98 @@ class_queries:
           'link-up': 3
       - name: epg_rx_flood
         value_name: vlanCktEp.children.[l2IngrBytes5min].attributes.floodCum
+        value_transform:
+          '': 0
         type: counter
         unit: "bytes"
       - name: epg_rx_multicast
         value_name: vlanCktEp.children.[l2IngrBytes5min].attributes.multicastCum
+        value_transform:
+          '': 0
         type: counter
         unit: "bytes"
       - name: epg_rx_unicast
         value_name: vlanCktEp.children.[l2IngrBytes5min].attributes.unicastCum
+        value_transform:
+          '': 0
         type: counter
         unit: "bytes"
       - name: epg_rx_drop
         value_name: vlanCktEp.children.[l2IngrBytes5min].attributes.dropCum
+        value_transform:
+          '': 0
         type: counter
         unit: "bytes"
       - name: epg_tx_flood
-        value_name: vlanCktEp.children.[l2EgrBytes5min].attributes.floodCum
+        value_name: vlanCktEp.children.[l2EgrBytes5min].attributes.floodCum+
+        value_transform:
+          '': 0
         type: counter
         unit: "bytes"
       - name: epg_tx_multicast
         value_name: vlanCktEp.children.[l2EgrBytes5min].attributes.multicastCum
+        value_transform:
+          '': 0
         type: counter
         unit: "bytes"
       - name: epg_tx_unicast
         value_name: vlanCktEp.children.[l2EgrBytes5min].attributes.unicastCum
+        value_transform:
+          '': 0
         type: counter
         unit: "bytes"
       - name: epg_tx_drop
         value_name: vlanCktEp.children.[l2EgrBytes5min].attributes.dropCum
+        value_transform:
+          '': 0
         type: counter
         unit: "bytes"
       - name: epg_rx_flood
         value_name: vlanCktEp.children.[l2IngrPkts5min].attributes.floodCum
+        value_transform:
+          '': 0
         type: counter
         unit: "pkts"
       - name: epg_rx_multicast
         value_name: vlanCktEp.children.[l2IngrPkts5min].attributes.multicastCum
+        value_transform:
+          '': 0
         type: counter
         unit: "pkts"
       - name: epg_rx_unicast
         value_name: vlanCktEp.children.[l2IngrPkts5min].attributes.unicastCum
+        value_transform:
+          '': 0
         type: counter
         unit: "pkts"
       - name: epg_rx_drop
         value_name: vlanCktEp.children.[l2IngrPkts5min].attributes.dropCum
+        value_transform:
+          '': 0
         type: counter
         unit: "pkts"
       - name: epg_tx_flood
         value_name: vlanCktEp.children.[l2EgrPkts5min].attributes.floodCum
+        value_transform:
+          '': 0
         type: counter
         unit: "pkts"
       - name: epg_tx_multicast
         value_name: vlanCktEp.children.[l2EgrPkts5min].attributes.multicastCum
+        value_transform:
+          '': 0
         type: counter
         unit: "pkts"
       - name: epg_tx_unicast
         value_name: vlanCktEp.children.[l2EgrPkts5min].attributes.unicastCum
+        value_transform:
+          '': 0
         type: counter
         unit: "pkts"
       - name: epg_tx_drop
         value_name: vlanCktEp.children.[l2EgrPkts5min].attributes.dropCum
+        value_transform:
+          '': 0
         type: counter
         unit: "pkts"
 

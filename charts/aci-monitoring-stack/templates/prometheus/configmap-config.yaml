@@ -21,19 +21,19 @@ data:
       {{- if $.Values.aci_exporter.aciServiceDiscoveryURLs }}
       {{- range $k, $v := $.Values.aci_exporter.aciServiceDiscoveryURLs }}
       - job_name: {{ $k }}-aci-exporter-apics
-        scrape_interval: 5m
-        scrape_timeout: 4m
+        scrape_interval: {{ $v.apic_polling }}
+        scrape_timeout: {{ $v.apic_scrape_timeout }}
         metrics_path: /probe
         params:
             # List of the queries to execute on the fabric level. They need to match the aci-exporter config
             # DO NOT INSERT SPACES and use \ for next line or aci-exporter will not be able to parse the queries
           queries:
-            - "health,fabric_node_info,max_capacity,max_global_pctags,\
+            - "health,fabric_node_info,max_capacity,max_global_pctags,subnets,epg_to_bd,bd_to_vrf,\
               vlans,static_binding_info,node_count,object_count,fault_insts,\
               ps_power_usage,apic_hw_sensors,controller_topsystem"
         scheme: http
         http_sd_configs:
-          - url: {{ $v }}
+          - url: {{ $v.url }}
             refresh_interval: 5m
         relabel_configs:
           - source_labels: [ __meta_role ]
@@ -51,8 +51,8 @@ data:
             replacement: "$1"
             target_label: __address__
       - job_name: {{ $k }}-aci-exporter-switches
-        scrape_interval: 1m
-        scrape_timeout: 30s
+        scrape_interval: {{ $v.switch_polling }}
+        scrape_timeout: {{ $v.switch_scrape_timeout }}
         metrics_path: /probe
         params:
             # List of the queries to execute on the fabric level. They need to match the aci-exporter config
@@ -68,7 +68,7 @@ data:
               node_scale_ctx,node_ospf_neighbors,node_fru_power_usage,node_temperature"
         scheme: http
         http_sd_configs:
-          - url: {{ $v }}
+          - url: {{ $v.url }}
             refresh_interval: 5m
         relabel_configs:
           - source_labels: [ __meta_role ]

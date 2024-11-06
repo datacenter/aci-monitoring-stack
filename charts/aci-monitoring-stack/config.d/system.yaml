@@ -20,6 +20,7 @@ class_queries:
           'unknown': 7
           'decommissioned': 8
           'maintenance': 9
+          'commissioned': 10
     labels:
       - property_name: fabricNode.attributes.name
         regex: "^(?P<name>.*)"

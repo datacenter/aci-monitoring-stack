@@ -22,7 +22,12 @@ aci_exporter:
   # You  need to change this ONLY if you want to deploy this chart multiple times in the same namespace to avoid 
   # having duplicate service name in the same NS.
   aciServiceDiscoveryURLs:
-    sd: http://aci-exporter-svc:9643/sd
+    sd:
+      url: http://aci-exporter-svc:9643/sd
+      apic_polling: 5m
+      apic_scrape_timeout: 4m
+      switch_polling: 1m
+      switch_scrape_timeout: 30s
   prefix: aci_
 
 prometheus:
