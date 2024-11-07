@@ -86,7 +86,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "  (\n        aci_bd_to_vrf{fabric=\"$fabric\"}\n      + on (fabric, bd_name, bd_tenant) group_right (vrf_name, vrf_tenant)\n        (\n            aci_subnets{fabric=\"$fabric\",subnet=\"$subnet\"}\n          + on (fabric, bd_name, bd_tenant) group_right ()\n            (aci_inb_epg_to_bd{fabric=\"$fabric\"} or aci_epg_to_bd{fabric=\"$fabric\"})\n        )\n    >=\n      0\n  )\nor on ()\n  (\n    label_replace(\n        aci_subnets{fabric=\"$fabric\",subnet=\"$subnet\"}\n      + on (fabric, bd_name, bd_tenant) group_right ()\n        (aci_inb_epg_to_bd{fabric=\"$fabric\"} or aci_epg_to_bd{fabric=\"$fabric\"}),\n      \"vrf_name\",\n      \"NO VRF\",\n      \"vrf_name\",\n      \".*\"\n    )\n  )",
+          "expr": "  (\n        aci_bd_to_vrf{fabric=\"$fabric\"}\n      + on (fabric, bd_name, bd_tenant) group_right (vrf_name, vrf_tenant)\n        (\n            aci_subnets{fabric=\"$fabric\",subnet=\"$subnet\"}\n          + on (fabric, bd_name, bd_tenant) group_right ()\n            (aci_inb_epg_to_bd{fabric=\"$fabric\"} or aci_epg_to_bd{fabric=\"$fabric\"} or aci_svc_epg_to_bd{fabric=\"$fabric\"})\n        )\n    >=\n      0\n  )\nor on ()\n  (\n    label_replace(\n        aci_subnets{fabric=\"$fabric\",subnet=\"$subnet\"}\n      + on (fabric, bd_name, bd_tenant) group_right ()\n        (aci_inb_epg_to_bd{fabric=\"$fabric\"} or aci_epg_to_bd{fabric=\"$fabric\"} or aci_svc_epg_to_bd{fabric=\"$fabric\"} ),\n      \"vrf_name\",\n      \"NO VRF\",\n      \"vrf_name\",\n      \".*\"\n    )\n  )",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -431,7 +431,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "fab2",
           "value": "fab2"
         },
@@ -587,9 +587,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "1.1.1.254/24",
-          "value": "1.1.1.254/24"
+          "selected": true,
+          "text": "10.36.0.1/24",
+          "value": "10.36.0.1/24"
         },
         "datasource": {
           "type": "prometheus",
@@ -624,6 +624,6 @@
   "timezone": "",
   "title": "EPG Explore",
   "uid": "a4f7ea75-6ef6-4639-809a-755684e11ac1",
-  "version": 11,
+  "version": 12,
   "weekStart": ""
 }

@@ -32,7 +32,17 @@ class_queries:
         regex: "^uni/tn-(?P<epg_tenant>.*)/mgmtp-(?P<app>.*)/inb-(?P<epg>.*)/rsmgmtBD"
       - property_name: mgmtRsMgmtBD.attributes.tDn
         regex: "^uni/tn-(?P<bd_tenant>.*)/BD-(?P<bd_name>.*)"
-
+  svc_epg_to_bd:
+    class_name: vnsRsLIfCtxToBD
+    query_parameter: '?order-by=vnsRsLIfCtxToBD.dn'
+    metrics:
+      - name: svc_epg_to_bd
+        value_name: vnsRsLIfCtxToBD.attributes.uid
+    labels:
+      - property_name: vnsRsLIfCtxToBD.attributes.dn
+        regex: "^uni/tn-(?P<epg_tenant>.*)/ldevCtx-c-(?P<contract>.*)-g-(?P<graph>.*)-n-(?P<node>.*)/lIfCtx-c-(?P<contract_dir>.*)/rsLIfCtxToBD"
+      - property_name: vnsRsLIfCtxToBD.attributes.tDn
+        regex: "^uni/tn-(?P<bd_tenant>.*)/BD-(?P<bd_name>.*)"
   bd_to_vrf:
     class_name: fvRtCtx
     query_parameter: '?order-by=fvRtCtx.dn'
