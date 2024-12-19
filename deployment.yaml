@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-aci-backup2graph
+  labels:
+    app.kubernetes.io/component: dev-aci-backup2graph
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: dev-aci-backup2graph
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: dev-aci-backup2graph
+    spec:
+      containers:
+        - name: aci-backup2graph
+          image: harbor.cam.ciscolabs.com/library/backup2graph:test
+          imagePullPolicy: Always
+          volumeMounts:
+          - name: aci-mon-stack-aci-exporter-config
+            mountPath: /etc/backup2graph/config.yaml
+            subPath: config.yaml
+          - name: backups
+            mountPath: /app/fabrics/
+          env:
+          - name: MEMGRAPH_SVC_HOST
+            value: aci-mon-stack-memgraph
+          - name: MEMGRAPH_SVC_PORT
+            value: "7687"
+      nodeSelector:
+        type: high-perf
+      volumes:
+      - name: aci-mon-stack-aci-exporter-config
+        configMap:
+          name: aci-mon-stack-aci-exporter-config
+      - name: backups
+        persistentVolumeClaim:
+          claimName: aci-mon-stack-memgraph-user-storage-aci-mon-stack-memgraph-0

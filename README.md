@@ -19,6 +19,10 @@ The ACI-Monitoring-Stack integrates the following key components:
 
 - [aci-exporter](https://github.com/opsdis/aci-exporter): A Prometheus exporter that serves as the bridge between your Cisco ACI environment and the Prometheus monitoring ecosystem. The aci-exporter translates ACI-specific metrics into a format that Prometheus can ingest, ensuring that all crucial data points are captured and monitored effectively.
 
+- [backup2graph](apps/backup2graph/README.md): Convert an ACI Backup into a Graph Database
+
+- [Memgraph](https://github.com/memgraph/memgraph): An open source graph database implemented in C/C++ and leverages an in-memory first architecture. This will be used in the ACI-Monitoring-Stack to explore the ACI configurations imported by backup2graph
+
 - Pre-configured ACI data collections queries, alerts, and dashboards (Work In Progress): The ACI-Monitoring-Stack provides a solid foundation for monitoring an ACI fabric with its pre-defined queries, dashboards, and alerts. While these tools are crafted based on best practices to offer immediate insights into network performance, they are not exhaustive. The strength of the ACI-Monitoring-Stack lies in its community-driven approach. Users are invited to contribute their expertise by providing feedback, sharing custom solutions, and helping enhance the stack. Your input helps to refine and expand the stack's capabilities, ensuring it remains a relevant and powerful tool for network monitoring.
 
 # Your Stack
@@ -80,6 +84,29 @@ Prior to ACI 6.1 `syslog-ng` is required between `ACI` and `Promtail` to convert
       V -->|No| SL
 ```
 
+
+## Config Explorer:
+
+ACI-Monitoring-Stack will generate a Config Snapshot every 15min (By default) and automatically load it into Memgraph.
+Backup2Graph uses ACI API Call to:
+- Create a new snapshot policy
+- Trigger a snapshot
+- Delete the snapshot policy and snapshot (once transferred out of the APIC)
+
+and then uses `scp` to copy it over for processing. Once the Snapshot is copied the APIC config is cleaned up
+
+```mermaid
+    flowchart-elk RL
+      U["User"]
+      G["Grafana"]
+      A["APIC"]
+      B2G["Backup2Graph"]
+      MG["Memgraph"]
+      A--"Backup"-->B2G
+      B2G--"Push"-->MG
+      MG--"Cypher Queries"-->G
+      G-->U
+```
 ## Data Visualization
 
 The Data Visualization is handled by `Grafana`, an open-source analytics and monitoring platform that allows users to visualize, query, and analyze data from various sources through customizable and interactive dashboards. It supports a wide range of data sources, including `Prometheus` and `Loki` enabling users to create real-time visualizations, alerts, and reports to monitor system performance and gain actionable insights.

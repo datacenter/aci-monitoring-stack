@@ -73,6 +73,10 @@ grafana:
   grafana.ini:
     users:
       viewers_can_edit: "True"
+    plugins:
+      allow_loading_unsigned_plugins: "kniepdennis-neo4j-datasource"
+  plugins:
+    - http://<IP>/kniepdennis-neo4j-datasource-2.0.0.zip;kniepdennis-neo4j-datasource
   adminPassword: <adminPassword>
   deploymentStrategy:
     type: Recreate
@@ -143,3 +147,7 @@ promtail:
       protocol: TCP
       service:
         type: ClusterIP
+memgraph:
+  storageClass: 
+    name: memgraph
+    provisioner: "driver.longhorn.io"
