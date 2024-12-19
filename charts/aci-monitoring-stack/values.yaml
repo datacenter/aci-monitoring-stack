@@ -118,6 +118,7 @@ grafana:
   enabled: true
   defaultDashboardsEnabled: false
   sidecar:
+   # This will load datasorces that are defined as ConfigMaps with the label grafana_datasource
     datasources:
       name: Prometheus
       uid: prometheus
@@ -132,10 +133,6 @@ grafana:
         uid: alertmanager
         handleGrafanaManagedAlerts: false
         implementation: prometheus
-      kniepdennis-neo4j-datasource:
-        enabled: true
-        name: kniepdennis-neo4j-datasource
-        uid: memgraph
     dashboards:
       enabled: true
       label: grafana_dashboard

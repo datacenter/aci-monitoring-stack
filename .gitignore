@@ -1,4 +1,4 @@
 my_lab.yaml
-experiments/
+local_tests/
 req.rest
 ndi.rest
