@@ -1,0 +1,42 @@
+{{- if $.Values.backup2graph.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $.Release.Name }}-aci-backup2graph
+  labels:
+    app.kubernetes.io/component: {{ $.Release.Name }}-aci-backup2graph
+spec:
+  schedule: "{{ .Values.backup2graph.schedule }}"
+  concurrencyPolicy: 'Forbid'
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: aci-backup2graph
+              image: "{{ .Values.backup2graph.image.repository }}:{{ .Values.backup2graph.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.backup2graph.image.pullPolicy }}
+              volumeMounts:
+              - name: {{ $.Release.Name }}-aci-exporter-config
+                mountPath: /etc/backup2graph/config.yaml
+                subPath: config.yaml
+              - name: backups
+                mountPath: /app/fabrics/
+              env:
+              - name: MEMGRAPH_SVC_HOST
+                value: {{ $.Release.Name }}-memgraph
+              - name: MEMGRAPH_SVC_PORT
+                value: "{{ $.Values.memgraph.boltPort }}"
+          {{- with .Values.backup2graph.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}      
+          volumes:
+          - name: {{ $.Release.Name }}-aci-exporter-config
+            configMap:
+              name: {{ $.Release.Name }}-aci-exporter-config
+          - name: backups
+            persistentVolumeClaim:
+              claimName: {{ $.Release.Name }}-memgraph-user-storage-{{ $.Release.Name }}-memgraph-0
+          restartPolicy: Never
+{{- end }}

@@ -145,7 +145,6 @@ grafana:
       enabled: false
     rbac:
       create: false
-
 promtail:
   enabled: true
   config:
@@ -313,3 +312,25 @@ loki:
     replicas: 0
   bloomGateway:
     replicas: 0
+
+backup2graph:
+  enabled: true
+  # How often to run the backup2graph job this is a cron schedule expressions by default is every 15min
+  schedule: "*/15 * * * *"
+  nodeSelector: {}
+  image:
+    repository: quay.io/datacenter/backup2graph
+    tag: v0.1.0
+    pullPolicy: Always
+memgraph:
+  enabled: true
+  boltPort: 7687
+  container:
+    terminationGracePeriodSeconds: 60
+  sysctlInitContainer:
+    enabled: false
+  persistentVolumeClaim:
+    createUserClaim: true
+    userStorageAccessMode: "ReadWriteMany"
+    # DO NOT CHANGE: backup2graph is hardcoded to use this path
+    userMountPath: /app/fabrics/

@@ -1,0 +1,5 @@
+[registry."harbor.cam.ciscolabs.com"]
+  ca=["/nfs-share/harbor/harbor-install/ca.crt"]
+  [[registry."harbor.cam.ciscolabs.com".keypair]]
+    key="/nfs-share/harbor/harbor-install/harbor.cam.ciscolabs.com.key"
+    cert="/nfs-share/harbor/harbor-install/harbor.cam.ciscolabs.com.crt"

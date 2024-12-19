@@ -273,6 +273,31 @@ syslog:
 ### ACI Syslog Config
 If you need a reminder on how to configure ACI Syslog take a look [Here](syslog.md)
 
+### Config Exporter
+
+The config exporter feature requires 3 components:
+
+- backup2graph: This has been developed specifically for this use case and is packaged in this repo.
+- Memgraph: Deployed with the Memgraph Chart
+- kniepdennis-neo4j-datasource: This is a Grafana datasource plugin. I had to generate a patched version to address a few issues. Until my [PR](https://github.com/denniskniep/grafana-datasource-plugin-neo4j/pull/38) is accepted:  it will be required to run this as un unsigned plugin. You can download it locally from here: [kniepdennis-neo4j-datasource-2.0.0.zip](../apps/neo4j-datasource/kniepdennis-neo4j-datasource-2.0.0.zip), place it on a webserver and add the `URL` in the field below:
+  ```yaml
+  grafana:
+    enable: true
+    grafana.ini:
+      plugins:
+        allow_loading_unsigned_plugins: "kniepdennis-neo4j-datasource"
+    plugins:
+      - `URL`;kniepdennis-neo4j-datasource
+  ```
+
+You will also need to provide `memgraph` with some persistent storage for example this can be done like this:
+  ```yaml
+  memgraph:
+    enabled: true
+    storageClass: 
+      name: memgraph
+      provisioner: "driver.longhorn.io"
+  ```
 ## Example Config for 4 Fabrics
 Here you can see an [Example Config for 4 Fabrics](4-fabric-example.yaml)
 

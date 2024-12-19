@@ -1,0 +1,231 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Explore the Contracts!",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 37,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "kniepdennis-neo4j-datasource",
+        "uid": "fe79cxhz8ufwga"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LeafProfile.name"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 16,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "Format": "table",
+          "cypherQuery": "MATCH (provider)-[r1:fvRsProv]-(contract:vzBrCP)-[r2:fvRsCons]-(consumer)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\n\nRETURN provider.dn, consumer.dn",
+          "datasource": {
+            "type": "kniepdennis-neo4j-datasource",
+            "uid": "fe79cxhz8ufwga"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Contract Table",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "kniepdennis-neo4j-datasource",
+        "uid": "fe79cxhz8ufwga"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LeafProfile.name"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "edges": {},
+        "nodes": {}
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "Format": "nodegraph",
+          "cypherQuery": "MATCH (provider)-[r1:fvRsProv]-(contract:vzBrCP)-[r2:fvRsCons]-(consumer)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\n\nRETURN *",
+          "datasource": {
+            "type": "kniepdennis-neo4j-datasource",
+            "uid": "fe79cxhz8ufwga"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Contract Graphs",
+      "type": "nodeGraph"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 40,
+  "tags": [
+    "cisco-aci"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "fab2",
+          "value": "fab2"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(fabric)",
+        "label": "Fabric",
+        "name": "fabric",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(fabric)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "common",
+          "value": "common"
+        },
+        "datasource": {
+          "type": "kniepdennis-neo4j-datasource",
+          "uid": "fe79cxhz8ufwga"
+        },
+        "definition": "",
+        "label": "Tenants",
+        "name": "tenant",
+        "options": [],
+        "query": {
+          "cypherQuery": "MATCH (t:fvTenant) WHERE (t.fabric=\"$fabric\")\nRETURN t.name"
+        },
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "Kubernetes-l3out-allow-all",
+          "value": "Kubernetes-l3out-allow-all"
+        },
+        "datasource": {
+          "type": "kniepdennis-neo4j-datasource",
+          "uid": "fe79cxhz8ufwga"
+        },
+        "definition": "",
+        "description": "",
+        "label": "Contracts",
+        "name": "contract",
+        "options": [],
+        "query": {
+          "cypherQuery": "MATCH (t:fvTenant)-[r:IS_PARENT]->(c:vzBrCP) WHERE (t.fabric=\"$fabric\" and t.name=\"$tenant\")\nRETURN c.name"
+        },
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Contract Explorer",
+  "uid": "be79w387etcsga",
+  "version": 21,
+  "weekStart": ""
+}
