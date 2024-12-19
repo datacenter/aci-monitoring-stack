@@ -120,9 +120,19 @@ grafana:
   sidecar:
    # This will load datasorces that are defined as ConfigMaps with the label grafana_datasource
     datasources:
+      name: Prometheus
+      uid: prometheus
       enabled: true
+      defaultDatasourceEnabled: true
+      isDefaultDatasource: true
       label: grafana_datasource
       labelValue: "aci-monitoring-stack"
+      alertmanager:
+        enabled: true
+        name: Alertmanager
+        uid: alertmanager
+        handleGrafanaManagedAlerts: false
+        implementation: prometheus
     dashboards:
       enabled: true
       label: grafana_dashboard
