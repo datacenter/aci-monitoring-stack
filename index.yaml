@@ -3,6 +3,37 @@ entries:
   aci-monitoring-stack:
   - apiVersion: v2
     appVersion: v0.8.0
+    created: "2024-12-19T01:41:59.867830168Z"
+    dependencies:
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 26.0.1
+    - condition: loki.enabled
+      name: loki
+      repository: https://grafana.github.io/helm-charts
+      version: 6.23.0
+    - condition: promtail.enabled
+      name: promtail
+      repository: https://grafana.github.io/helm-charts
+      version: 6.16.6
+    - condition: grafana.enabled
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      version: 8.8.2
+    - condition: memgraph.enabled
+      name: memgraph
+      repository: https://memgraph.github.io/helm-charts
+      version: 0.1.8
+    description: A Helm chart for Kubernetes
+    digest: b3f73c980395d96bb6be480e8d7f20edbeb50a1ffa0f61e1d0eeabed2e084945
+    name: aci-monitoring-stack
+    type: application
+    urls:
+    - https://github.com/datacenter/aci-monitoring-stack/releases/download/aci-monitoring-stack-0.2.0/aci-monitoring-stack-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: v0.8.0
     created: "2024-11-07T02:41:44.436909698Z"
     dependencies:
     - condition: prometheus.enabled
@@ -217,4 +248,4 @@ entries:
     urls:
     - https://github.com/datacenter/aci-monitoring-stack/releases/download/aci-monitoring-stack-0.1.0/aci-monitoring-stack-0.1.0.tgz
     version: 0.1.0
-generated: "2024-11-07T02:41:44.436938091Z"
+generated: "2024-12-19T01:41:59.867854874Z"
