@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-prom-datasource
+  name: {{ .Release.Name }}-grafana-datasources
   namespace: {{ .Release.Namespace }}
 {{- if .Values.grafana.sidecar.datasources.annotations }}
   annotations:
@@ -54,7 +54,34 @@ data:
         implementation: {{ .Values.grafana.sidecar.datasources.alertmanager.implementation }}
 {{- end }}
 {{- end }}
-{{- if .Values.grafana.additionalDataSources }}
-{{ tpl (toYaml .Values.grafana.additionalDataSources | indent 4) . }}
+
+{{- if $.Values.memgraph.enabled }}
+    - name: "memgraph"
+      type: kniepdennis-neo4j-datasource
+      access: proxy
+      url: ""
+      jsonData: {url: "bolt://{{ $.Release.Name }}-memgraph:{{ $.Values.memgraph.boltPort }}"}
+      uid: 'memgraph'
+      version: 2
 {{- end }}
+
+{{- if $.Values.loki.enabled }}
+{{- if .Values.loki.loki.enabled }}
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://{{ template "loki.gatewayFullname" .Subcharts.loki }}:{{ .Values.loki.loki.gateway.service.port }}
+      version: 1
+      isDefault: {{ default false .Values.loki.loki.isDefault }}
+      {{- with .Values.loki.loki.datasource.uid }}
+      uid: {{ . | quote }}
+      {{- end }}
+      {{- with .Values.loki.loki.datasource.jsonData }}
+      jsonData:
+        {{- tpl . $ | nindent 8 }}
+      {{- end }}
+{{- end }}
+
+{{- end }}
+
 {{- end }}
