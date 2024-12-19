@@ -25,7 +25,7 @@
       {
         "datasource": {
           "type": "kniepdennis-neo4j-datasource",
-          "uid": "fe79cxhz8ufwga"
+          "uid": "memgraph"
         },
         "fieldConfig": {
           "defaults": {
@@ -95,7 +95,7 @@
             "cypherQuery": "//To optimize the query is importan to filter as early as possible.\n//Collect all the Interface Policy Groups and filter by name\nOPTIONAL MATCH (n1:infraAccPortGrp) WHERE (n1.fabric=\"$fabric\" and n1.name=\"$pg\")\nOPTIONAL MATCH (n2:infraAccBndlGrp) WHERE (n2.fabric=\"$fabric\" and n2.name=\"$pg\")\nWITH coalesce(n1, n2) as PG\n\n//Find the Interface Policy Group to AAEP relationship\nMATCH (PG)-[r1:infraRsAttEntP]->(AAEP) \n//Find the Interface Policy Group to Access Port Selector relationship\nMATCH (AccessPortSel:infraHPortS)-[r2:infraRsAccBaseGrp]->(PG)\n\n//From now on all the matches are Optinal as I want to be able to display also incomplete configs\n//Build PG to VLAN ID relationships\nOPTIONAL MATCH (AAEP)-[r3:infraRsDomP]->(Domain)\nOPTIONAL MATCH (Domain)-[r4:infraRsVlanNs]->(VlanPool)\nOPTIONAL MATCH (VlanPool)-[r5:IS_PARENT]->(vlanBlock)\n\n//Find AccessPortSel to Interface Block relationships\nOPTIONAL MATCH (AccessPortSel)-[r6:IS_PARENT]->(interfaceBlk:infraPortBlk)\n// Find the Switch that is used for the PG\nOPTIONAL MATCH (LeafIntProf:infraAccPortP)-[r7:IS_PARENT]->(AccessPortSel)\nOPTIONAL MATCH (LeafProfile:infraNodeP)-[r8:infraRsAccPortP]->(LeafIntProf)\n//RETURN *\nRETURN vlanBlock.from + ' - ' + vlanBlock.to as VLANIDs,\n       VlanPool.name,Domain.name,AAEP.name,PG.name,LeafProfile.name,AccessPortSel.name,LeafIntProf.name,\n       interfaceBlk.fromCard + '/' + interfaceBlk.fromPort + ' - ' + interfaceBlk.toCard + '/' + interfaceBlk.toPort as Interface\n",
             "datasource": {
               "type": "kniepdennis-neo4j-datasource",
-              "uid": "fe79cxhz8ufwga"
+              "uid": "memgraph"
             },
             "refId": "A"
           }
@@ -140,7 +140,7 @@
           },
           "datasource": {
             "type": "kniepdennis-neo4j-datasource",
-            "uid": "fe79cxhz8ufwga"
+            "uid": "memgraph"
           },
           "definition": "",
           "label": "PortGroup",

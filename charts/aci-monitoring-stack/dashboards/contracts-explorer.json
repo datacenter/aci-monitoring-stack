@@ -25,7 +25,7 @@
     {
       "datasource": {
         "type": "kniepdennis-neo4j-datasource",
-        "uid": "fe79cxhz8ufwga"
+        "uid": "memgraph"
       },
       "fieldConfig": {
         "defaults": {
@@ -92,7 +92,7 @@
           "cypherQuery": "MATCH (provider)-[r1:fvRsProv]-(contract:vzBrCP)-[r2:fvRsCons]-(consumer)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\n\nRETURN provider.dn, consumer.dn",
           "datasource": {
             "type": "kniepdennis-neo4j-datasource",
-            "uid": "fe79cxhz8ufwga"
+            "uid": "memgraph"
           },
           "refId": "A"
         }
@@ -103,7 +103,7 @@
     {
       "datasource": {
         "type": "kniepdennis-neo4j-datasource",
-        "uid": "fe79cxhz8ufwga"
+        "uid": "memgraph"
       },
       "fieldConfig": {
         "defaults": {},
@@ -135,7 +135,7 @@
           "cypherQuery": "MATCH (provider)-[r1:fvRsProv]-(contract:vzBrCP)-[r2:fvRsCons]-(consumer)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\n\nRETURN *",
           "datasource": {
             "type": "kniepdennis-neo4j-datasource",
-            "uid": "fe79cxhz8ufwga"
+            "uid": "memgraph"
           },
           "refId": "A"
         }
@@ -180,7 +180,7 @@
         },
         "datasource": {
           "type": "kniepdennis-neo4j-datasource",
-          "uid": "fe79cxhz8ufwga"
+          "uid": "memgraph"
         },
         "definition": "",
         "label": "Tenants",
@@ -201,7 +201,7 @@
         },
         "datasource": {
           "type": "kniepdennis-neo4j-datasource",
-          "uid": "fe79cxhz8ufwga"
+          "uid": "memgraph"
         },
         "definition": "",
         "description": "",

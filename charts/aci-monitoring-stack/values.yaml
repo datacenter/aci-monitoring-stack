@@ -132,6 +132,10 @@ grafana:
         uid: alertmanager
         handleGrafanaManagedAlerts: false
         implementation: prometheus
+      kniepdennis-neo4j-datasource:
+        enabled: true
+        name: kniepdennis-neo4j-datasource
+        uid: memgraph
     dashboards:
       enabled: true
       label: grafana_dashboard
