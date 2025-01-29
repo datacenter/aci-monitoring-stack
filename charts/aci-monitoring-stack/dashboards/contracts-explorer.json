@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 37,
+  "id": 29,
   "links": [],
   "panels": [
     {
@@ -55,19 +55,11 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "LeafProfile.name"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
-        "h": 11,
-        "w": 16,
+        "h": 8,
+        "w": 24,
         "x": 0,
         "y": 0
       },
@@ -85,11 +77,11 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "11.3.1",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "Format": "table",
-          "cypherQuery": "MATCH (provider)-[r1:fvRsProv]-(contract:vzBrCP)-[r2:fvRsCons]-(consumer)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\n\nRETURN provider.dn, consumer.dn",
+          "cypherQuery": "MATCH (provider)-[r1:fvRsProv]-(contract:vzBrCP)-[r2:fvRsCons]-(consumer)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\n\nRETURN provider.dn as ProviderDN, consumer.dn as ConsumerDN",
           "datasource": {
             "type": "kniepdennis-neo4j-datasource",
             "uid": "memgraph"
@@ -98,6 +90,73 @@
         }
       ],
       "title": "Contract Table",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "kniepdennis-neo4j-datasource",
+        "uid": "memgraph"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "cypherQuery": "MATCH (contract:vzBrCP)-[r1:IS_PARENT]->(subject:vzSubj)-[r2:vzRsSubjFiltAtt]->(filter:vzFilter)-[r3:IS_PARENT]-(entry:vzEntry)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\nWITH split(entry.dn,\"/\") as parsedDN, entry\nreturn  split(parsedDN[1],\"-\")[1] as Tenant,\n        split(parsedDN[3],\"-\")[1] as Name,\n        entry.sFromPort + '-' + entry.sToPort as SrcPort, entry.dFromPort + '-' + entry.dToPort as DestPort",
+          "datasource": {
+            "type": "kniepdennis-neo4j-datasource",
+            "uid": "memgraph"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Filter Entry",
       "type": "table"
     },
     {
@@ -118,17 +177,17 @@
         ]
       },
       "gridPos": {
-        "h": 11,
-        "w": 8,
-        "x": 16,
-        "y": 0
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 8
       },
       "id": 2,
       "options": {
         "edges": {},
         "nodes": {}
       },
-      "pluginVersion": "11.3.1",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "Format": "nodegraph",
@@ -147,7 +206,8 @@
   "preload": false,
   "schemaVersion": 40,
   "tags": [
-    "cisco-aci"
+    "cisco-aci",
+    "cisco-aci-config"
   ],
   "templating": {
     "list": [
@@ -196,8 +256,8 @@
       },
       {
         "current": {
-          "text": "Kubernetes-l3out-allow-all",
-          "value": "Kubernetes-l3out-allow-all"
+          "text": "esg_oob",
+          "value": "esg_oob"
         },
         "datasource": {
           "type": "kniepdennis-neo4j-datasource",
@@ -226,6 +286,6 @@
   "timezone": "browser",
   "title": "Contract Explorer",
   "uid": "be79w387etcsga",
-  "version": 21,
+  "version": 7,
   "weekStart": ""
 }
