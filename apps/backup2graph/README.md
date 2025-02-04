@@ -32,7 +32,7 @@ docker buildx create --use  --driver-opt '"env.http_proxy='$http_proxy'"' --driv
 For my build I just need `https_proxy` but you can add the other options if needed.
 ```shell
 docker login harbor.cam.ciscolabs.com  -u <USER> -p <PASS>
-docker build . --build-arg HTTPS_PROXY=$https_proxy,HTTP_PROXY=$http_proxy --platform linux/amd64,linux/arm64 --push --tag harbor.cam.ciscolabs.com/library/backup2graph:test 
+docker build . --build-arg HTTPS_PROXY=$https_proxy --build-arg HTTP_PROXY=$http_proxy --platform linux/amd64,linux/arm64 --push --tag harbor.cam.ciscolabs.com/library/backup2graph:test 
 ```
 
 If you push to a registry that needs authentication do
