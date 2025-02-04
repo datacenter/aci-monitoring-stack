@@ -18,13 +18,178 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 15,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
+        "type": "kniepdennis-neo4j-datasource",
+        "uid": "memgraph"
+      },
+      "description": "This show all the vlans that are being used in the fabric.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VLANID"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Static VLANs in use"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "cypherQuery": "//To optimize the query is importan to filter as early as possible.\n//Collect all the Interface Policy Groups and filter by name \nOPTIONAL MATCH (a:l3extRsPathL3OutAtt) WHERE (a.fabric=\"$fabric\")\nWITH COLLECT(DISTINCT a.encap) as aencap\nOPTIONAL MATCH (b:l3extVirtualLIfP)  WHERE (b.fabric=\"$fabric\")\nWITH aencap + COLLECT(DISTINCT b.encap) as bencap\nOPTIONAL MATCH (c:fvRsPathAtt)  WHERE (c.fabric=\"$fabric\")\nWITH bencap + COLLECT(DISTINCT c.encap) as cencap\nOPTIONAL MATCH (d:infraRsFuncToEpg) WHERE (d.fabric=\"$fabric\")\nWITH cencap + COLLECT(DISTINCT d.encap) as dencap\nUNWIND dencap AS individualEncaps\nWITH TOINTEGER(SPLIT(individualEncaps,\"-\")[1]) as VLANID\nRETURN VLANID ORDER BY VLANID",
+          "datasource": {
+            "type": "kniepdennis-neo4j-datasource",
+            "uid": "memgraph"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "kniepdennis-neo4j-datasource",
+        "uid": "memgraph"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "VLANID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 138
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 21,
+        "x": 3,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "cypherQuery": "//To optimize the query is importan to filter as early as possible.\n//Collect all the Interface Policy Groups and filter by name \nOPTIONAL MATCH (a:l3extRsPathL3OutAtt) WHERE (a.fabric=\"$fabric\")\nWITH COLLECT(a) as aencap\nOPTIONAL MATCH (b:l3extVirtualLIfP)  WHERE (b.fabric=\"$fabric\")\nWITH aencap + COLLECT(b) as bencap\nOPTIONAL MATCH (c:fvRsPathAtt) WHERE (c.fabric=\"$fabric\")\nWITH bencap + COLLECT(c) as cencap\nOPTIONAL MATCH (d:infraRsFuncToEpg) WHERE (d.fabric=\"$fabric\")\nWITH cencap + COLLECT(d) as dencap\nUNWIND dencap AS individualEncaps\nRETURN TOINTEGER(SPLIT(individualEncaps.encap,\"-\")[1]) as VLANID, individualEncaps.dn as DN\nORDER BY VLANID",
+          "datasource": {
+            "type": "kniepdennis-neo4j-datasource",
+            "uid": "memgraph"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "VLAN To Port Config",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "kniepdennis-neo4j-datasource",
+        "uid": "memgraph"
       },
       "fieldConfig": {
         "defaults": {
@@ -57,10 +222,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 22,
+        "h": 15,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 8
       },
       "id": 1,
       "options": {
@@ -75,23 +240,22 @@
           "show": false
         },
         "frameIndex": 3,
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Vlan Pool Name"
+          }
+        ]
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "11.5.1",
       "targets": [
         {
+          "cypherQuery": "MATCH(vlp:fvnsVlanInstP)-[r1]-(vblk:fvnsEncapBlk) where (vlp.fabric=\"$fabric\")\nRETURN vlp.name AS POOL_NAME, vblk.from as FROM, vblk.to as TO",
           "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+            "type": "kniepdennis-neo4j-datasource",
+            "uid": "memgraph"
           },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "aci_vlan_pool{fabric=~\"$fabric\",vlanns!~\"\"}",
-          "format": "table",
-          "instant": true,
-          "key": "Q-4d7407b5-ffe1-413c-938b-48d2c8dd8808-0",
-          "legendFormat": "__auto",
-          "range": false,
           "refId": "A"
         }
       ],
@@ -133,8 +297,8 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
+        "type": "kniepdennis-neo4j-datasource",
+        "uid": "memgraph"
       },
       "fieldConfig": {
         "defaults": {
@@ -167,10 +331,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 22,
+        "h": 15,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 8
       },
       "id": 2,
       "options": {
@@ -186,21 +350,14 @@
         "frameIndex": 3,
         "showHeader": true
       },
-      "pluginVersion": "11.1.0",
+      "pluginVersion": "11.5.1",
       "targets": [
         {
+          "cypherQuery": "MATCH(vlp:vmmUsrCustomAggr)-[r1]-(vblk:fvnsEncapBlk) where (vlp.fabric=\"$fabric\")\nRETURN vlp.name AS POOL_NAME, vblk.from as FROM, vblk.to as TO",
           "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+            "type": "kniepdennis-neo4j-datasource",
+            "uid": "memgraph"
           },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "aci_vlan_pool{fabric=~\"$fabric\",TrunkPGName!=\"\"}",
-          "format": "table",
-          "instant": true,
-          "key": "Q-4d7407b5-ffe1-413c-938b-48d2c8dd8808-0",
-          "legendFormat": "__auto",
-          "range": false,
           "refId": "A"
         }
       ],
@@ -242,28 +399,27 @@
       "type": "table"
     }
   ],
+  "preload": false,
   "refresh": "",
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [
-    "cisco-aci"
+    "cisco-aci",
+    "cisco-aci-config"
   ],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "text": "fab2",
+          "value": "fab2"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "prometheus"
         },
         "definition": "label_values(fabric)",
-        "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "label": "Fabric",
-        "multi": false,
         "name": "fabric",
         "options": [],
         "query": {
@@ -272,8 +428,6 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -282,11 +436,10 @@
     "from": "now-5m",
     "to": "now"
   },
-  "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {},
   "timezone": "",
   "title": "Vlans",
   "uid": "c094d195-2037-4f78-bc33-b4c7cc0ddc0d",
-  "version": 1,
+  "version": 14,
   "weekStart": ""
 }
