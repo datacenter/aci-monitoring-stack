@@ -1,169 +1,170 @@
 {
-    "annotations": {
-      "list": [
-        {
-          "builtIn": 1,
-          "datasource": {
-            "type": "grafana",
-            "uid": "-- Grafana --"
-          },
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "type": "dashboard"
-        }
-      ]
-    },
-    "description": "Explore the Port Groups to VLAN/Domain/Switch and Port Bindings",
-    "editable": true,
-    "fiscalYearStartMonth": 0,
-    "graphTooltip": 0,
-    "id": 36,
-    "links": [],
-    "panels": [
+  "annotations": {
+    "list": [
       {
+        "builtIn": 1,
         "datasource": {
-          "type": "kniepdennis-neo4j-datasource",
-          "uid": "memgraph"
+          "type": "grafana",
+          "uid": "-- Grafana --"
         },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "custom": {
-              "align": "auto",
-              "cellOptions": {
-                "type": "auto"
-              },
-              "inspect": false
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "LeafProfile.name"
-              },
-              "properties": [
-                {
-                  "id": "custom.width",
-                  "value": 220
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 21,
-          "w": 24,
-          "x": 0,
-          "y": 0
-        },
-        "id": 1,
-        "options": {
-          "cellHeight": "sm",
-          "footer": {
-            "countRows": false,
-            "fields": "",
-            "reducer": [
-              "sum"
-            ],
-            "show": false
-          },
-          "showHeader": true,
-          "sortBy": []
-        },
-        "pluginVersion": "11.3.1",
-        "targets": [
-          {
-            "cypherQuery": "//To optimize the query is importan to filter as early as possible.\n//Collect all the Interface Policy Groups and filter by name\nOPTIONAL MATCH (n1:infraAccPortGrp) WHERE (n1.fabric=\"$fabric\" and n1.name=\"$pg\")\nOPTIONAL MATCH (n2:infraAccBndlGrp) WHERE (n2.fabric=\"$fabric\" and n2.name=\"$pg\")\nWITH coalesce(n1, n2) as PG\n\n//Find the Interface Policy Group to AAEP relationship\nMATCH (PG)-[r1:infraRsAttEntP]->(AAEP) \n//Find the Interface Policy Group to Access Port Selector relationship\nMATCH (AccessPortSel:infraHPortS)-[r2:infraRsAccBaseGrp]->(PG)\n\n//From now on all the matches are Optinal as I want to be able to display also incomplete configs\n//Build PG to VLAN ID relationships\nOPTIONAL MATCH (AAEP)-[r3:infraRsDomP]->(Domain)\nOPTIONAL MATCH (Domain)-[r4:infraRsVlanNs]->(VlanPool)\nOPTIONAL MATCH (VlanPool)-[r5:IS_PARENT]->(vlanBlock)\n\n//Find AccessPortSel to Interface Block relationships\nOPTIONAL MATCH (AccessPortSel)-[r6:IS_PARENT]->(interfaceBlk:infraPortBlk)\n// Find the Switch that is used for the PG\nOPTIONAL MATCH (LeafIntProf:infraAccPortP)-[r7:IS_PARENT]->(AccessPortSel)\nOPTIONAL MATCH (LeafProfile:infraNodeP)-[r8:infraRsAccPortP]->(LeafIntProf)\n//RETURN *\nRETURN vlanBlock.from + ' - ' + vlanBlock.to as VLANIDs,\n       VlanPool.name,Domain.name,AAEP.name,PG.name,LeafProfile.name,AccessPortSel.name,LeafIntProf.name,\n       interfaceBlk.fromCard + '/' + interfaceBlk.fromPort + ' - ' + interfaceBlk.toCard + '/' + interfaceBlk.toPort as Interface\n",
-            "datasource": {
-              "type": "kniepdennis-neo4j-datasource",
-              "uid": "memgraph"
-            },
-            "refId": "A"
-          }
-        ],
-        "title": "Panel Title",
-        "type": "table"
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
       }
-    ],
-    "preload": false,
-    "schemaVersion": 40,
-    "tags": [
-      "cisco-aci"
-    ],
-    "templating": {
-      "list": [
-        {
-          "current": {
-            "text": "fab1",
-            "value": "fab1"
+    ]
+  },
+  "description": "Explore the Port Groups to VLAN/Domain/Switch and Port Bindings",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 7,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "kniepdennis-neo4j-datasource",
+        "uid": "memgraph"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
           },
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
           },
-          "definition": "label_values(fabric)",
-          "label": "Fabric",
-          "name": "fabric",
-          "options": [],
-          "query": {
-            "qryType": 1,
-            "query": "label_values(fabric)",
-            "refId": "PrometheusVariableQueryEditor-VariableQuery"
-          },
-          "refresh": 1,
-          "regex": "",
-          "type": "query"
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
         },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LeafProfile.name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 220
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 21,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
         {
-          "current": {
-            "text": "APICs",
-            "value": "APICs"
-          },
+          "cypherQuery": "//To optimize the query is importan to filter as early as possible.\n//Collect all the Interface Policy Groups and filter by name\nOPTIONAL MATCH (n1:infraAccPortGrp) WHERE (n1.fabric=\"$fabric\" and n1.name=\"$pg\")\nOPTIONAL MATCH (n2:infraAccBndlGrp) WHERE (n2.fabric=\"$fabric\" and n2.name=\"$pg\")\nWITH coalesce(n1, n2) as PG\n\n//Find the Interface Policy Group to AAEP relationship\nMATCH (PG)-[r1:infraRsAttEntP]->(AAEP) \n//Find the Interface Policy Group to Access Port Selector relationship\nMATCH (AccessPortSel:infraHPortS)-[r2:infraRsAccBaseGrp]->(PG)\n\n//From now on all the matches are Optinal as I want to be able to display also incomplete configs\n//Build PG to VLAN ID relationships\nOPTIONAL MATCH (AAEP)-[r3:infraRsDomP]->(Domain)\nOPTIONAL MATCH (Domain)-[r4:infraRsVlanNs]->(VlanPool)\nOPTIONAL MATCH (VlanPool)-[r5:IS_PARENT]->(vlanBlock)\n\n//Find AccessPortSel to Interface Block relationships\nOPTIONAL MATCH (AccessPortSel)-[r6:IS_PARENT]->(interfaceBlk:infraPortBlk)\n// Find the Switch that is used for the PG\nOPTIONAL MATCH (LeafIntProf:infraAccPortP)-[r7:IS_PARENT]->(AccessPortSel)\nOPTIONAL MATCH (LeafProfile:infraNodeP)-[r8:infraRsAccPortP]->(LeafIntProf)\n//RETURN *\nRETURN vlanBlock.from + ' - ' + vlanBlock.to as VLANIDs,\n       VlanPool.name,Domain.name,AAEP.name,PG.name,LeafProfile.name,AccessPortSel.name,LeafIntProf.name,\n       interfaceBlk.fromCard + '/' + interfaceBlk.fromPort + ' - ' + interfaceBlk.toCard + '/' + interfaceBlk.toPort as Interface\n",
           "datasource": {
             "type": "kniepdennis-neo4j-datasource",
             "uid": "memgraph"
           },
-          "definition": "",
-          "label": "PortGroup",
-          "name": "pg",
-          "options": [],
-          "query": {
-            "cypherQuery": "OPTIONAL MATCH (n:infraAccPortGrp) WHERE (n.fabric=\"$fabric\") \nRETURN n.name as PGName\nUNION\nOPTIONAL MATCH (n:infraAccBndlGrp) WHERE (n.fabric=\"$fabric\") \nRETURN n.name as PGName"
-          },
-          "refresh": 1,
-          "regex": "",
-          "sort": 1,
-          "type": "query"
+          "refId": "A"
         }
-      ]
-    },
-    "time": {
-      "from": "now-6h",
-      "to": "now"
-    },
-    "timepicker": {},
-    "timezone": "browser",
-    "title": "Fabric Policies - Port Group",
-    "uid": "ae79d0uzpr9xcc",
-    "version": 8,
-    "weekStart": ""
-  }
+      ],
+      "title": "Panel Title",
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 40,
+  "tags": [
+    "cisco-aci",
+    "cisco-aci-config"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "fab1",
+          "value": "fab1"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(fabric)",
+        "label": "Fabric",
+        "name": "fabric",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(fabric)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "APICs",
+          "value": "APICs"
+        },
+        "datasource": {
+          "type": "kniepdennis-neo4j-datasource",
+          "uid": "memgraph"
+        },
+        "definition": "",
+        "label": "PortGroup",
+        "name": "pg",
+        "options": [],
+        "query": {
+          "cypherQuery": "OPTIONAL MATCH (n:infraAccPortGrp) WHERE (n.fabric=\"$fabric\") \nRETURN n.name as PGName\nUNION\nOPTIONAL MATCH (n:infraAccBndlGrp) WHERE (n.fabric=\"$fabric\") \nRETURN n.name as PGName"
+        },
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Fabric Policies - Port Group",
+  "uid": "ae79d0uzpr9xcc",
+  "version": 1,
+  "weekStart": ""
+}

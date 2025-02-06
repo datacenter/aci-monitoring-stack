@@ -2,3 +2,4 @@ my_lab.yaml
 local_tests/
 req.rest
 ndi.rest
+cronRole.yml

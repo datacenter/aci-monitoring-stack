@@ -422,8 +422,6 @@ def get_backups(fabrics):
             logger.error("aci-meta file does not exist for fabric %s, this fabric will not be processed", fabric)
     return backups
 
-
-
 # Load the config map having the ACI access details
 fabrics = load_config()
 
