@@ -23,7 +23,7 @@ aci_exporter:
   # having duplicate service name in the same NS.
   aciServiceDiscoveryURLs:
     sd:
-      url: http://aci-exporter-svc:9643/sd
+      url: http://aci-exporter-svc.{{ .Release.Namespace }}.svc:9643/sd
       apic_polling: 5m
       apic_scrape_timeout: 4m
       switch_polling: 1m
@@ -271,8 +271,8 @@ loki:
         enabled: true
         clients:
           fake:
-            url: http://aci-mon-stack-prometheus-server:80/api/v1/write
-      alertmanager_url: http://aci-mon-stack-alertmanager:9093
+            url: http://aci-mon-stack-prometheus-server.{{ .Release.Namespace }}.svc:80/api/v1/write
+      alertmanager_url: http://aci-mon-stack-alertmanager.{{ .Release.Namespace }}.svc:9093
       ring:
         kvstore:
           store: inmemory

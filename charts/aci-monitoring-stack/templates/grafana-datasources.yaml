@@ -24,7 +24,7 @@ data:
       {{- if .Values.grafana.sidecar.datasources.url }}
       url: {{ .Values.grafana.sidecar.datasources.url }}
       {{- else }}
-      url: http://{{ .Release.Name }}-prometheus-server:{{ .Values.prometheus.service.servicePort }}/{{ trimPrefix "/" .Values.prometheus.server.prefixURL }}
+      url: http://{{ .Release.Name }}-prometheus-server.{{ .Release.Namespace }}.svc:{{ .Values.prometheus.service.servicePort }}/{{ trimPrefix "/" .Values.prometheus.server.prefixURL }}
       {{- end }}
       access: proxy
       isDefault: {{ .Values.grafana.sidecar.datasources.isDefaultDatasource }}
@@ -46,7 +46,7 @@ data:
       {{- if .Values.grafana.sidecar.datasources.alertmanager.url }}
       url: {{ .Values.grafana.sidecar.datasources.alertmanager.url }}
       {{- else }}
-      url: http://{{ .Release.Name }}-alertmanager:{{ .Values.prometheus.alertmanager.service.port }}
+      url: http://{{ .Release.Name }}-alertmanager.{{ .Release.Namespace }}.svc:{{ .Values.prometheus.alertmanager.service.port }}
       {{- end }}
       access: proxy
       jsonData:
