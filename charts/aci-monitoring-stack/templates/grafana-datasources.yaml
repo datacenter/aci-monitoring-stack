@@ -60,7 +60,7 @@ data:
       type: kniepdennis-neo4j-datasource
       access: proxy
       url: ""
-      jsonData: {url: "bolt://{{ $.Release.Name }}-memgraph:{{ $.Values.memgraph.boltPort }}"}
+      jsonData: {url: "bolt://{{ $.Release.Name }}-memgraph.{{ .Release.Namespace }}.svc:{{ $.Values.memgraph.boltPort }}"}
       uid: 'memgraph'
       version: 2
 {{- end }}
@@ -70,7 +70,7 @@ data:
     - name: Loki
       type: loki
       access: proxy
-      url: http://{{ template "loki.gatewayFullname" .Subcharts.loki }}:{{ .Values.loki.loki.gateway.service.port }}
+      url: http://{{ template "loki.gatewayFullname" .Subcharts.loki }}.{{ .Release.Namespace }}.svc:{{ .Values.loki.loki.gateway.service.port }}
       version: 1
       isDefault: {{ default false .Values.loki.loki.isDefault }}
       {{- with .Values.loki.loki.datasource.uid }}
