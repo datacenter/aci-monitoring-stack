@@ -59,7 +59,7 @@ def load_objects(o, data):
             if o.ClassName not in dict(const.RelationshipToLocal | const.RelationshipFromLocal | const.RelationshipFromGlobal | const.RelationshipToGlobal ):
                 # Create the Header for the #Class CSV File
                 data['csv_nodes'][o.ClassName] = []
-                # Entich the node CSV with a mainstat property for Grafana Visualization
+                # Enrich the node CSV with a mainstat property for Grafana Visualization
                 data['csv_nodes'][o.ClassName].append(o.NonEmptyPropertyNames + ['fabric', 'mainstat'])
                 load_command = 'LOAD CSV FROM "' + csv_folder +'/{}.csv" WITH HEADER AS row CREATE (p:{}) SET p += row'.format(str(o.ClassName),str(o.ClassName))
                 data['load_nodes'].append(load_command)
@@ -98,14 +98,15 @@ def load_objects(o, data):
                 data['load_edges'].append(load_command)
             
             data['parent-child-rel'][pc].append([data['fabric_id'],o.Parent.Dn,o.Dn])
-                    
+        
 def create_non_pc_rel(data):
     _, fabric_backup_folder = folder_paths(data['fabric_id'])
     csv_folder = os.path.join(fabric_backup_folder, 'csv')
     def generate_rel(key,rel_target_class):
-   
+        
+        # The backup MO properties are not 1:1 to what you have in the API so we need to ALWAYS look at a backup file to be sure how to code the logic. 
         # Some Rel Classes have a tDn in the backup
-        # Some put the name of the target object in a property called tn<ClassName>Nameso but the 1st letter is capitalized.
+        # Some put the name of the target object in a property called tn<ClassName>Nameso but the 1st letter is capitalized. i.e. tnVzBrCPName
         npcr = []
         rel_target_prop = 'tn' + rel_target_class[0].upper() + rel_target_class[1:] + 'Name'
         
@@ -145,15 +146,15 @@ def create_non_pc_rel(data):
             target_name = getattr(rel, rel_target_prop).replace("'","")
             if target_name == '':
                 target_name = 'default'            
+            edge_direction = '(s)-[r:{} {} ]->(t)'.format(rel.ClassName, ' {target: row[3] }')
 
-            edge_direction = '(s)-[r:{}]->(t)'.format(rel.ClassName)
             
             key += rel.Parent.ClassName + "-" + rel_target_class
             
             # Handle the contracts in a special way and override the default file name and relationship direction.
             if rel.ClassName == 'fvRsProv':
                 key += '-fvRsProv'
-                edge_direction = '(t)-[r:{}]->(s)'.format(rel.ClassName)
+                edge_direction = '(s)-[r:{} {} ]->(t)'.format(rel.ClassName, ' {target: row[3] }')
             elif rel.ClassName == 'fvRsCons':
                 key += '-fvRsCons'
             
@@ -161,12 +162,21 @@ def create_non_pc_rel(data):
             
             if key not in data['non-parent-child-rel'].keys():
                 data['non-parent-child-rel'][key] = []
-                load_command = 'LOAD CSV FROM "'+ csv_folder + '/{0}.csv" NO HEADER AS row OPTIONAL MATCH (s1:{1}),(t1:{2}) WHERE s1.dn=row[1] AND t1.name=row[3] AND t1.dn STARTS WITH row[2] AND s1.fabric=row[0] AND t1.fabric=row[0] WITH s1, t1, row OPTIONAL MATCH (s2:{1}),(t2:{2}) WHERE s2.dn=row[1] AND t2.name=row[3] AND t2.dn STARTS WITH "uni/tn-common" AND s2.fabric=row[0] AND t2.fabric=row[0] WITH COALESCE(s1, s2) as s,  COALESCE(t1, t2)  AS t WHERE s IS NOT NULL AND t IS NOT NULL CREATE {3}'.format(key,rel.Parent.ClassName,rel_target_class,edge_direction)
+                load_command = 'LOAD CSV FROM "'+ csv_folder + '/{0}.csv" NO HEADER AS row \
+                MATCH (s:{1}) WHERE s.dn=row[1] AND s.fabric=row[0] \
+                OPTIONAL MATCH (t1:{2}) WHERE t1.name=row[3] AND t1.dn STARTS WITH row[2] AND t1.fabric=row[0] \
+                OPTIONAL MATCH (t2:{2}) WHERE t2.name=row[3] AND t2.dn STARTS WITH "uni/tn-common" AND t2.fabric=row[0] \
+                OPTIONAL MATCH (t3:{2}) WHERE t3.name=row[3] AND t3.dn STARTS WITH "uni/fabric" AND t3.fabric=row[0] \
+                OPTIONAL MATCH (t4:{2}) WHERE t4.name=row[3] AND t4.dn STARTS WITH "uni/infra" AND t4.fabric=row[0] \
+                OPTIONAL MATCH (t5:MissingTarget) WHERE t5.fabric=row[0] \
+                WITH row, s, COALESCE(t1, t2, t3, t4, t5) AS t \
+                WHERE s IS NOT NULL AND t IS NOT NULL \
+                CREATE {3}'.format(key,rel.Parent.ClassName,rel_target_class,edge_direction)
                 data['load_edges'].append(load_command)
         
             npcr = [data['fabric_id'] , rel.Parent.Dn , "/".join(rel.Parent.Dn.split('/')[:2]) , target_name]
             data['non-parent-child-rel'][key].append(npcr)
-    
+            
     for rel in data['relationships']:
 
         if rel.ClassName in const.RelationshipToLocal.keys():
@@ -193,6 +203,7 @@ def write_to_disk(data,fabric_backup_folder):
             f.write(index)
     
     # Write the Nodes LOAD Queries
+    
     with open(csv_folder + '/nodes', 'w') as f:
         for i in data['load_nodes']:
             f.write(i + ";\n")
@@ -231,12 +242,22 @@ def process_backups(backups):
             'non-parent-child-rel': {},
             'load_nodes': [],
             'load_edges': [],
-            'load_indexes': [],
             'csv_nodes': {},
             'csv_edges': [],
             'fabric_id': ""
         }
         data['fabric_id']=fabric
+        
+        #Add a special case for the MissingTarget Objects
+        data['csv_nodes']["MissingTarget"] = []
+        # Enrich the node CSV with a mainstat property for Grafana Visualization
+        data['csv_nodes']["MissingTarget"].append(['fabric', 'mainstat'])
+        # I really only need 1 MissingTarget node per fabric no other info is needed.
+        data['csv_nodes']["MissingTarget"].append([data['fabric_id'],data['fabric_id']])
+        csv_folder = os.path.join(fabric_backup_folder, 'csv')
+        load_command = 'LOAD CSV FROM "' + csv_folder +'/MissingTarget.csv" WITH HEADER AS row CREATE (p:MissingTarget) SET p += row'
+        data['load_nodes'].append(load_command)
+        
         
         logger.info("PyACI: Loading Backup in Memory for Fabric %s",fabric)
         b = Backup(backup_file, aciMetaFilePath=fabric_meta).load()
