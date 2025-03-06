@@ -249,6 +249,7 @@ def process_backups(backups):
         data['fabric_id']=fabric
         
         #Add a special case for the MissingTarget Objects
+        data['classes'].add("MissingTarget")
         data['csv_nodes']["MissingTarget"] = []
         # Enrich the node CSV with a mainstat property for Grafana Visualization
         data['csv_nodes']["MissingTarget"].append(['fabric', 'mainstat'])
