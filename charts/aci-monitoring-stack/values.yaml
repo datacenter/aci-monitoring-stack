@@ -21,9 +21,11 @@ aci_exporter:
   # Sadly acnhors don't support string concatenation so we have to ensure the aci-sd-url matches the config.port and config.url
   # You  need to change this ONLY if you want to deploy this chart multiple times in the same namespace to avoid 
   # having duplicate service name in the same NS.
+  # Note: The url is then expanded in the config map as {{ $v.url }}.{{ $.Release.Namespace }}.svc:{{ $.Values.aci_exporter.port }}/sd
+  # so do not include ports or paths here.
   aciServiceDiscoveryURLs:
     sd:
-      url: http://aci-exporter-svc.{{ .Release.Namespace }}.svc:9643/sd
+      url: http://aci-exporter-svc
       apic_polling: 5m
       apic_scrape_timeout: 4m
       switch_polling: 1m

@@ -33,7 +33,7 @@ data:
               ps_power_usage,apic_hw_sensors,controller_topsystem"
         scheme: http
         http_sd_configs:
-          - url: {{ $v.url }}
+          - url: {{ $v.url }}.{{ $.Release.Namespace }}.svc:{{ $.Values.aci_exporter.port }}/sd
             refresh_interval: 5m
         relabel_configs:
           - source_labels: [ __meta_role ]
@@ -68,7 +68,7 @@ data:
               node_scale_ctx,node_ospf_neighbors,node_fru_power_usage,node_temperature"
         scheme: http
         http_sd_configs:
-          - url: {{ $v.url }}
+          - url: {{ $v.url }}.{{ $.Release.Namespace }}.svc:{{ $.Values.aci_exporter.port }}/sd
             refresh_interval: 5m
         relabel_configs:
           - source_labels: [ __meta_role ]
