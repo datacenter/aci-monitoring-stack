@@ -314,3 +314,10 @@ params:
         ps_power_usage,apic_hw_sensors,controller_topsystem"
 ```
 
+## Updating the Charts
+When the version of the Charts is change we need to update the local copy:
+
+```bash
+cd aci-monitoring-stack/charts/aci-monitoring-stack
+helm dependency update
+```

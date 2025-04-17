@@ -135,7 +135,13 @@ def create_non_pc_rel(data):
             key += rel.Parent.ClassName + "-" + rel_target_class
             if key not in data['non-parent-child-rel'].keys():
                 data['non-parent-child-rel'][key] = []
-                load_command = 'LOAD CSV FROM "'+ csv_folder + '/{0}.csv" NO HEADER AS row MATCH (s:{1}),(t:{2}) WHERE s.dn=row[1] AND t.dn=row[2] AND s.fabric=row[0] AND t.fabric=row[0] CREATE (s)-[r:{3}]->(t)'.format(key,rel.Parent.ClassName,rel_target_class,rel.ClassName)
+                load_command = 'LOAD CSV FROM "'+ csv_folder + '/{0}.csv" NO HEADER AS row \
+                    MATCH (s:{1}) WHERE s.dn=row[1] AND s.fabric=row[0]  \
+                    OPTIONAL MATCH (t1:{2}) WHERE t1.dn=row[2] AND t1.fabric=row[0] \
+                    OPTIONAL MATCH (t2:MissingTarget) WHERE t2.fabric=row[0] \
+                    WITH  s, row, COALESCE(t1, t2) AS t \
+                    WHERE s IS NOT NULL AND t IS NOT NULL \
+                    CREATE (s)-[r:{3}'.format(key,rel.Parent.ClassName,rel_target_class,rel.ClassName) + ' {tDn: row[2]}]->(t)'
                 data['load_edges'].append(load_command)
                 
             npcr = [data['fabric_id'] , rel.Parent.Dn  , rel.tDn]
@@ -184,9 +190,19 @@ def create_non_pc_rel(data):
             key = 'lrs-'
             generate_rel(key,rel_target_class)
             
+        elif rel.ClassName in const.RelationshipFromLocal.keys():
+            rel_target_class = const.RelationshipFromLocal[rel.ClassName]
+            key = 'lrd-'
+            generate_rel(key,rel_target_class)
+            
         elif rel.ClassName  in const.RelationshipFromGlobal.keys():
             rel_target_class = const.RelationshipFromGlobal[rel.ClassName]
             key = 'grs-'
+            generate_rel(key,rel_target_class)
+            
+        elif rel.ClassName  in const.RelationshipToGlobal.keys():
+            rel_target_class = const.RelationshipToGlobal[rel.ClassName]
+            key = 'grd-'
             generate_rel(key,rel_target_class)
             
         else:

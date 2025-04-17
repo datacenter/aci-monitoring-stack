@@ -1,2 +1,2 @@
-cisco-pyaci==1.1.1
+cisco-pyaci==1.1.2
 pymgclient
