@@ -158,13 +158,13 @@ def create_non_pc_rel(data):
             key += rel.Parent.ClassName + "-" + rel_target_class
             
             # Handle the contracts in a special way and override the default file name and relationship direction.
-            if rel.ClassName == 'fvRsProv':
-                key += '-fvRsProv'
-                edge_direction = '(s)-[r:{} {} ]->(t)'.format(rel.ClassName, ' {target: row[3] }')
-            elif rel.ClassName == 'fvRsCons':
-                key += '-fvRsCons'
+            if rel.ClassName == 'fvRsProv' or rel.ClassName == 'vzRsAnyToProv':
+                key += '-' + rel.ClassName
+            elif rel.ClassName == 'fvRsCons' or rel.ClassName == 'vzRsAnyToCons':
+                key += '-' + rel.ClassName
+                edge_direction = '(t)-[r:{} {} ]->(s)'.format(rel.ClassName, ' {target: row[3] }')
             
-            key += rel.Parent.ClassName + "-" + rel_target_class
+            
             
             if key not in data['non-parent-child-rel'].keys():
                 data['non-parent-child-rel'][key] = []

@@ -81,7 +81,7 @@
       "targets": [
         {
           "Format": "table",
-          "cypherQuery": "MATCH (provider)-[r1:fvRsProv]-(contract:vzBrCP)-[r2:fvRsCons]-(consumer)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\n\nRETURN provider.dn as ProviderDN, consumer.dn as ConsumerDN",
+          "cypherQuery": "MATCH (provider)-[r1:fvRsProv|vzRsAnyToProv]-(contract:vzBrCP)-[r2:fvRsCons|vzRsAnyToCons]-(consumer)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\n\nRETURN provider.dn as ProviderDN, consumer.dn as ConsumerDN",
           "datasource": {
             "type": "kniepdennis-neo4j-datasource",
             "uid": "memgraph"
@@ -191,7 +191,7 @@
       "targets": [
         {
           "Format": "nodegraph",
-          "cypherQuery": "MATCH (provider)-[r1:fvRsProv]-(contract:vzBrCP)-[r2:fvRsCons]-(consumer)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\n\nRETURN *",
+          "cypherQuery": "MATCH (provider)-[r1:fvRsProv|vzRsAnyToProv]-(contract:vzBrCP)-[r2:fvRsCons|vzRsAnyToCons]-(consumer)\nWHERE  contract.dn=\"uni/tn-$tenant/brc-$contract\" and contract.fabric='$fabric'\n\nRETURN *",
           "datasource": {
             "type": "kniepdennis-neo4j-datasource",
             "uid": "memgraph"
