@@ -1,0 +1,10 @@
+{{- if .Values.loki.cephBucket.enabled }}
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: {{ .Values.loki.cephBucket.bucketName }}
+spec:
+  bucketName: {{ .Values.loki.cephBucket.bucketName }}
+  generateBucketName: {{ .Values.loki.cephBucket.bucketName }}
+  storageClassName: {{ .Values.loki.cephBucket.storageClassName }}
+{{- end }}
