@@ -151,3 +151,5 @@ memgraph:
   storageClass: 
     name: memgraph
     provisioner: "driver.longhorn.io"
+backup2graph:
+  enabled: true

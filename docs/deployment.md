@@ -315,7 +315,7 @@ helm -n aci-mon-stack upgrade --install --create-namespace aci-mon-stack aci-mon
 
 # OpenShift:
 
-Openshift adds on top of Kubernetes a lof of security features and by default will only allow rootless containers to run. This is problematic as most containers that works on Kubernetes needs to be re-created to work on OpenShift. Memgraph, syslog-ng will all not run by default, ideally I would just use the `privileged` scc however his doesen't work as I need to share a PVC between pods. 
+Openshift adds on top of Kubernetes a lof of security features and by default will only allow rootless containers to run. This is problematic as most containers that works on Kubernetes needs to be re-created to work on OpenShift. Memgraph and syslog-ng will all not run by default and ideally I would just use the `privileged` scc however this doesn't work as I need to share a PVC between pods. 
 
 This requires the SELinux policy to be set as `MustRunAs` See: https://access.redhat.com/solutions/6746451 for more details.
 
@@ -324,7 +324,9 @@ To circumvent this issue I am creating a new `SecurityContextConstraints` that a
 - Pods to run as privileged
 - Set the SELinux policy to be  `MustRunAs`
 
-I then create a `ServiceAccount`, `Cluster Role` and `Cluster Role Binding` to bind it all together and use it for all the PODs. This is perhaps not ideal but I am no OpenShift security expert. I am open to receive feedback and PR on this! :) 
+I then create a `ServiceAccount`, `Cluster Role` and `Cluster Role Binding` to bind it all together and use it for all the PODs. The name of all these object follow the `{{ $.Release.Name }}-{{ .Values.global.serviceAccountName }}` convention so there should be no clashing with other Cluster Wide objects.
+
+This is perhaps not ideal but I am no OpenShift security expert. I am open to receive feedback and PR on this! :) 
 
 All these objects are defined in the [Openshift](../charts/aci-monitoring-stack/templates/openshift) folder and are created only if the we detect deploying on OpenShift.
 However the helm value file will need to define a `global.serviceAccountName:` and also pass it to the various sub-charts. Check out the [openshift](example-openshift.yaml) example and look where I use the `priviledgedServiceAccountName` yaml anchor to see where you need to set this config. 
@@ -332,19 +334,19 @@ However the helm value file will need to define a `global.serviceAccountName:` a
 ## Loki and OpenShift Object Store
 
 Now that the PODs are running we need to create the required object store buckets for our cluster.
-If you do not have Ceph installed you can use Minio as per standard K8s but if you have Ceph we can ise it directly!
+If you do not have Ceph installed you can use Minio as per standard K8s but if you have Ceph we can use it object store capabilities. 
 
-1) First we start by enabling the `cephBuckets` flag, this will have the [cephBuckets](../charts/aci-monitoring-stack/templates/openshift/buckets.yaml) created.
+1) Start by enabling the `cephBucket` flag, this will have the [cephBucket](../charts/aci-monitoring-stack/templates/openshift/bucket.yaml) created.
 ```yaml
 loki:
-  cephBuckets:
+  cephBucket:
     enabled: true
     bucketName: &bucketName loki-bucket
     storageClassName: ocs-storagecluster-ceph-rgw
     endpoint: &bucketEndpoint rook-ceph-rgw-ocs-storagecluster-cephobjectstore.openshift-storage.svc:443
 ```
 
-2) We need to tell all the various components to use the created buckets and associated credentials and explicitly disable minio. Please notice that I am using YAML anchor so yo u should be able to set all the parameters in the previous section and just copy paste what is below
+2) We need to tell all the various components to use the created bucket and associated credentials and explicitly disable minio. Please notice that I am using YAML anchor so yo u should be able to set all the parameters in the previous section and just copy paste what is below
 
 ```yaml
 loki:
@@ -369,6 +371,7 @@ loki:
         http_config:
           insecure_skip_verify: true
         s3forcepathstyle: true
+  # OpenShift creates for us a secret called like the bucketName with the credential access so we can just pass is as is to the backend, write and read statefulset. 
   backend:
     extraEnvFrom:
       - secretRef:

@@ -1,8 +1,14 @@
 global:
-  serviceAccountName: &priviledgedServiceAccountName "aci-mon-stack-anyuid"
+  serviceAccountName: &priviledgedServiceAccountName "aci-mon-stack-priv-scc"
 
 aci_exporter:
-  # Profiles for different fabrics
+  aciServiceDiscoveryURLs:
+    sd:
+      apic_polling: 5m
+      apic_scrape_timeout: 4m
+      switch_polling: 1m
+      switch_scrape_timeout: 30s
+      url: http://aci-exporter-svc
   fabrics:
     fab1:
       username: <username>
@@ -10,10 +16,8 @@ aci_exporter:
       apic:
         - https://IP1
       service_discovery: inbMgmtAddr
-
 backup2graph:
   enabled: true
-
 grafana:
   serviceAccount:
     create: false
@@ -39,9 +43,14 @@ grafana:
     enabled: true
     size: 2Gi
   plugins:
-  - http://IP/kniepdennis-neo4j-datasource-2.0.0.zip;kniepdennis-neo4j-datasource
+  - http://<IP>/kniepdennis-neo4j-datasource-2.0.0.zip;kniepdennis-neo4j-datasource
   - volkovlabs-form-panel
 loki:
+  cephBucket:
+    enabled: true
+    bucketName: &bucketName loki-bucket
+    storageClassName: ocs-storagecluster-ceph-rgw
+    endpoint: &bucketEndpoint rook-ceph-rgw-ocs-storagecluster-cephobjectstore.openshift-storage.svc:443
   serviceAccount:
     create: false
     name: *priviledgedServiceAccountName
@@ -53,28 +62,37 @@ loki:
       external_url: http://aci-mon-stack-grafana.apps.ocp-sr-iov.cam.ciscolabs.com
     storage:
       bucketNames:
-        admin: loki-bucket-876cc4cc-986e-48db-9a30-e50fbd65285a
-        chunks: loki-bucket-876cc4cc-986e-48db-9a30-e50fbd65285a
-        ruler: loki-bucket-876cc4cc-986e-48db-9a30-e50fbd65285a
+        admin: *bucketName
+        chunks: *bucketName
+        ruler: *bucketName
       object_store: null
       s3:
-        access_key_id: BA7JYW5UCK5XM3V260NM
-        endpoint: rook-ceph-rgw-ocs-storagecluster-cephobjectstore.openshift-storage.svc:443
+        endpoint: *bucketEndpoint
         insecure: true
-        secret_access_key: BUmyjBwFUHRWnGemjryrH9wyWWeUskctAgWdWk1a
       type: s3
       use_thanos_objstore: true
     # Yes this needs to be repeated twice... 
     storage_config:
       aws:
-        bucketnames: loki-bucket-876cc4cc-986e-48db-9a30-e50fbd65285a
-        endpoint: rook-ceph-rgw-ocs-storagecluster-cephobjectstore.openshift-storage.svc:443
-        access_key_id: BA7JYW5UCK5XM3V260NM
-        secret_access_key: BUmyjBwFUHRWnGemjryrH9wyWWeUskctAgWdWk1a
+        bucketnames: *bucketName
+        endpoint: *bucketEndpoint
         insecure: false
         http_config:
           insecure_skip_verify: true
         s3forcepathstyle: true
+  backend:
+    extraEnvFrom:
+      - secretRef:
+          name: *bucketName
+  write:
+    extraEnvFrom:
+      - secretRef:
+          name: *bucketName
+  read:
+    extraEnvFrom:
+      - secretRef:
+          name: *bucketName
+  # I use CephFS for the storage, so I don't need to set this
   minio:
     enabled: false
 memgraph:
@@ -103,10 +121,10 @@ prometheus:
         - api_url: https://webexapis.com/v1/messages
           http_config:
             authorization:
-              credentials: MTA1NGRiNDctZWYxNC00ODIyLWJmZGItYzhkMjdlMjU0MGI4MTllZTBhY2YtMWE4_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f
+              credentials: <CREDENTIALS>
             no_proxy: .cam.ciscolabs.com,.cluster.local,.svc,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
             proxy_url: http://proxy-wsa.esl.cisco.com:80
-          room_id: Y2lzY29zcGFyazovL3VzL1JPT00vY2M1OTlmYTAtODNiYy0xMWVlLTk5MDktZTVjMTgwMzk5ZTk2
+          room_id: <ROOM_ID>
           send_resolved: false
       route:
         group_by:
@@ -141,9 +159,6 @@ promtail:
   extraPorts:
     Fab1:
       containerPort: 1513
-      labels:
-        pool: bgp-pool-1
-        type: bgp
       name: fab1
       protocol: TCP
       service:
@@ -151,9 +166,6 @@ promtail:
         type: NodePort
     Fab2:
       containerPort: 1514
-      labels:
-        pool: bgp-pool-1
-        type: bgp
       name: fab2
       protocol: TCP
       service:
@@ -170,9 +182,6 @@ syslog:
   services:
     nsd-backbone:
       containerPort: 1516
-      labels:
-        pool: bgp-pool-1
-        type: bgp
       name: nsd-backbone
       protocol: UDP
       service:
