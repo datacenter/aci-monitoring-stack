@@ -208,7 +208,7 @@ syslog:
 
 loki:
   enabled: true
-  openshift-buckets:
+  cephBucket:
     enabled: false
     bucketName: loki
     storageClassName: ocs-storagecluster-ceph-rgw
