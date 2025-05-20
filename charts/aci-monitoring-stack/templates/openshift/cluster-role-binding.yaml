@@ -1,0 +1,14 @@
+{{- if .Capabilities.APIVersions.Has "security.openshift.io/v1" }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ $.Release.Name }}-{{ .Values.global.serviceAccountName }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $.Release.Name }}-{{ .Values.global.serviceAccountName }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.global.serviceAccountName }}
+  namespace: {{ $.Release.Namespace }}
+{{- end }}

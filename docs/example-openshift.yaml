@@ -1,0 +1,180 @@
+global:
+  serviceAccountName: &priviledgedServiceAccountName "aci-mon-stack-anyuid"
+
+aci_exporter:
+  # Profiles for different fabrics
+  fabrics:
+    fab1:
+      username: <username>
+      password: <password>
+      apic:
+        - https://IP1
+      service_discovery: inbMgmtAddr
+
+backup2graph:
+  enabled: true
+
+grafana:
+  serviceAccount:
+    create: false
+    name: *priviledgedServiceAccountName
+  adminPassword: aci-monitoring
+  deploymentStrategy:
+    type: Recreate
+  enable: true
+  env:
+    http_proxy: http://proxy
+    https_proxy: http://proxy
+    no_proxy: .cam.ciscolabs.com,.cluster.local,.svc,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+  grafana.ini:
+    plugins:
+      allow_loading_unsigned_plugins: kniepdennis-neo4j-datasource
+    users:
+      viewers_can_edit: "True"
+  ingress:
+    enabled: true
+    hosts:
+    - aci-mon-stack-grafana.apps.ocp-sr-iov.cam.ciscolabs.com
+  persistence:
+    enabled: true
+    size: 2Gi
+  plugins:
+  - http://IP/kniepdennis-neo4j-datasource-2.0.0.zip;kniepdennis-neo4j-datasource
+  - volkovlabs-form-panel
+loki:
+  serviceAccount:
+    create: false
+    name: *priviledgedServiceAccountName
+  global:
+    dnsService: "dns-default"
+    dnsNamespace: "openshift-dns"
+  loki:
+    rulerConfig:
+      external_url: http://aci-mon-stack-grafana.apps.ocp-sr-iov.cam.ciscolabs.com
+    storage:
+      bucketNames:
+        admin: loki-bucket-876cc4cc-986e-48db-9a30-e50fbd65285a
+        chunks: loki-bucket-876cc4cc-986e-48db-9a30-e50fbd65285a
+        ruler: loki-bucket-876cc4cc-986e-48db-9a30-e50fbd65285a
+      object_store: null
+      s3:
+        access_key_id: BA7JYW5UCK5XM3V260NM
+        endpoint: rook-ceph-rgw-ocs-storagecluster-cephobjectstore.openshift-storage.svc:443
+        insecure: true
+        secret_access_key: BUmyjBwFUHRWnGemjryrH9wyWWeUskctAgWdWk1a
+      type: s3
+      use_thanos_objstore: true
+    # Yes this needs to be repeated twice... 
+    storage_config:
+      aws:
+        bucketnames: loki-bucket-876cc4cc-986e-48db-9a30-e50fbd65285a
+        endpoint: rook-ceph-rgw-ocs-storagecluster-cephobjectstore.openshift-storage.svc:443
+        access_key_id: BA7JYW5UCK5XM3V260NM
+        secret_access_key: BUmyjBwFUHRWnGemjryrH9wyWWeUskctAgWdWk1a
+        insecure: false
+        http_config:
+          insecure_skip_verify: true
+        s3forcepathstyle: true
+  minio:
+    enabled: false
+memgraph:
+  serviceAccount:
+    create: false
+    name: *priviledgedServiceAccountName
+  container:
+    terminationGracePeriodSeconds: 60
+  enabled: true
+  persistentVolumeClaim:
+    userStorageClassName: ocs-storagecluster-cephfs
+prometheus:
+  serviceAccounts:
+    server:
+      create: false
+      name: *priviledgedServiceAccountName
+  alertmanager:
+    serviceAccount:
+      create: false
+      name: *priviledgedServiceAccountName
+    baseURL: http://aci-mon-stack-alertmanager.apps.ocp-sr-iov.cam.ciscolabs.com
+    config:
+      receivers:
+      - name: webex
+        webex_configs:
+        - api_url: https://webexapis.com/v1/messages
+          http_config:
+            authorization:
+              credentials: MTA1NGRiNDctZWYxNC00ODIyLWJmZGItYzhkMjdlMjU0MGI4MTllZTBhY2YtMWE4_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f
+            no_proxy: .cam.ciscolabs.com,.cluster.local,.svc,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+            proxy_url: http://proxy-wsa.esl.cisco.com:80
+          room_id: Y2lzY29zcGFyazovL3VzL1JPT00vY2M1OTlmYTAtODNiYy0xMWVlLTk5MDktZTVjMTgwMzk5ZTk2
+          send_resolved: false
+      route:
+        group_by:
+        - alertname
+        group_interval: 30s
+        group_wait: 30s
+        receiver: webex
+        repeat_interval: 30s
+    ingress:
+      enabled: true
+      hosts:
+      - host: aci-mon-stack-alertmanager.apps.ocp-sr-iov.cam.ciscolabs.com
+        paths:
+        - path: /
+          pathType: ImplementationSpecific
+  server:
+    baseURL: http://aci-exporter-prom.apps.ocp-sr-iov.cam.ciscolabs.com
+    ingress:
+      enabled: true
+      hosts:
+      - aci-exporter-prom.apps.ocp-sr-iov.cam.ciscolabs.com
+    persistentVolume:
+      accessModes:
+      - ReadWriteOnce
+      size: 5Gi
+    service:
+      retentionSize: 5GB
+promtail:
+  serviceAccount:
+    create: false
+    name: *priviledgedServiceAccountName
+  extraPorts:
+    Fab1:
+      containerPort: 1513
+      labels:
+        pool: bgp-pool-1
+        type: bgp
+      name: fab1
+      protocol: TCP
+      service:
+        port: 1514
+        type: NodePort
+    Fab2:
+      containerPort: 1514
+      labels:
+        pool: bgp-pool-1
+        type: bgp
+      name: fab2
+      protocol: TCP
+      service:
+        port: 1514
+        type: NodePort
+    nsd-backbone:
+      containerPort: 1516
+      name: nsd-backbone
+      protocol: TCP
+      service:
+        type: ClusterIP
+syslog:
+  enabled: true
+  services:
+    nsd-backbone:
+      containerPort: 1516
+      labels:
+        pool: bgp-pool-1
+        type: bgp
+      name: nsd-backbone
+      protocol: UDP
+      service:
+        port: 1516
+        type: NodePort

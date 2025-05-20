@@ -202,12 +202,16 @@ promtail:
 syslog:
   enabled: false
   image:
-    repository: balabit/syslog-ng
-    tag: 4.7.1
+    repository: lscr.io/linuxserver/syslog-ng
+    tag: 4.8.1
     pullPolicy: IfNotPresent
 
 loki:
   enabled: true
+  openshift-buckets:
+    enabled: false
+    bucketName: loki
+    storageClassName: ocs-storagecluster-ceph-rgw
   fullnameOverride: "loki"
   monitoring:
     dashboards:

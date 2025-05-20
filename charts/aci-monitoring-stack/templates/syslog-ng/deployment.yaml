@@ -17,8 +17,13 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/syslog-ng/configmap.yaml") . | sha256sum }}
     spec:
+      {{- if .Capabilities.APIVersions.Has "security.openshift.io/v1" }}
+      serviceAccountName: {{ .Values.global.serviceAccountName }}
+      {{- end }}
       containers:
         - name: syslog-ng
+          securityContext:
+            runAsUser: 0
           image: "{{ .Values.syslog.image.repository }}:{{ .Values.syslog.image.tag }}"
           imagePullPolicy: {{ .Values.syslog.image.pullPolicy }}
           ports:

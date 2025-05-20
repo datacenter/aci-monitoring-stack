@@ -12,6 +12,9 @@ spec:
     spec:
       template:
         spec:
+          {{- if .Capabilities.APIVersions.Has "security.openshift.io/v1" }}
+          serviceAccountName: {{ .Values.global.serviceAccountName }}
+          {{- end }}
           containers:
             - name: aci-backup2graph
               image: "{{ .Values.backup2graph.image.repository }}:{{ .Values.backup2graph.image.tag | default .Chart.AppVersion }}"

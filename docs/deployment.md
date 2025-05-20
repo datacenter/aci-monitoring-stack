@@ -11,6 +11,8 @@ The main Deployment workflow will consist in two steps:
   - Promtail
 - Deployment using HELM
 
+Warning: If you are installing on OpenShift you will need a few additional steps. Refer to the [OpenShift Section](#openshift)
+
 ## Pre Requisites
 - Familiarity with Kubernetes: This installation guide is intended to assist with the setup of the ACI Monitoring stack and assumes prior familiarity with Kubernetes; it is not designed to provide instruction on Kubernetes itself.
 - A Kubernetes Cluster: Currently the stack has been tested on `Upstream Kubernetes 1.30.x` `Minikube` and `k3s`
@@ -310,3 +312,86 @@ helm repo add aci-monitoring-stack https://datacenter.github.io/aci-monitoring-s
 helm repo update
 helm -n aci-mon-stack upgrade --install --create-namespace aci-mon-stack aci-monitoring-stack/aci-monitoring-stack -f aci-mon-stack-config.yaml
 ```
+
+# OpenShift:
+
+Openshift adds on top of Kubernetes a lof of security features and by default will only allow rootless containers to run. This is problematic as most containers that works on Kubernetes needs to be re-created to work on OpenShift. Memgraph, syslog-ng will all not run by default, ideally I would just use the `privileged` scc however his doesen't work as I need to share a PVC between pods. 
+
+This requires the SELinux policy to be set as `MustRunAs` See: https://access.redhat.com/solutions/6746451 for more details.
+
+To circumvent this issue I am creating a new `SecurityContextConstraints` that allows:
+- Pods to run with `anyuid`
+- Pods to run as privileged
+- Set the SELinux policy to be  `MustRunAs`
+
+I then create a `ServiceAccount`, `Cluster Role` and `Cluster Role Binding` to bind it all together and use it for all the PODs. This is perhaps not ideal but I am no OpenShift security expert. I am open to receive feedback and PR on this! :) 
+
+All these objects are defined in the [Openshift](../charts/aci-monitoring-stack/templates/openshift) folder and are created only if the we detect deploying on OpenShift.
+However the helm value file will need to define a `global.serviceAccountName:` and also pass it to the various sub-charts. Check out the [openshift](example-openshift.yaml) example and look where I use the `priviledgedServiceAccountName` yaml anchor to see where you need to set this config. 
+
+## Loki and OpenShift Object Store
+
+Now that the PODs are running we need to create the required object store buckets for our cluster.
+If you do not have Ceph installed you can use Minio as per standard K8s but if you have Ceph we can ise it directly!
+
+1) First we start by enabling the `cephBuckets` flag, this will have the [cephBuckets](../charts/aci-monitoring-stack/templates/openshift/buckets.yaml) created.
+```yaml
+loki:
+  cephBuckets:
+    enabled: true
+    bucketName: &bucketName loki-bucket
+    storageClassName: ocs-storagecluster-ceph-rgw
+    endpoint: &bucketEndpoint rook-ceph-rgw-ocs-storagecluster-cephobjectstore.openshift-storage.svc:443
+```
+
+2) We need to tell all the various components to use the created buckets and associated credentials and explicitly disable minio. Please notice that I am using YAML anchor so yo u should be able to set all the parameters in the previous section and just copy paste what is below
+
+```yaml
+loki:
+  loki:
+    storage:
+      bucketNames:
+        admin: *bucketName
+        chunks: *bucketName
+        ruler: *bucketName
+      object_store: null
+      s3:
+        endpoint: *bucketEndpoint
+        insecure: true
+      type: s3
+      use_thanos_objstore: true
+    # Yes this needs to be repeated twice... 
+    storage_config:
+      aws:
+        bucketnames: *bucketName
+        endpoint: *bucketEndpoint
+        insecure: false
+        http_config:
+          insecure_skip_verify: true
+        s3forcepathstyle: true
+  backend:
+    extraEnvFrom:
+      - secretRef:
+          name: *bucketName
+  write:
+    extraEnvFrom:
+      - secretRef:
+          name: *bucketName
+  read:
+    extraEnvFrom:
+      - secretRef:
+          name: *bucketName
+  # I use CephFS for the storage, so I don't need to set this
+  minio:
+    enabled: false
+```
+
+3) Lastly Furthermore we need to tell loki the Cluster DNS is not the usual one by setting:
+```yaml
+loki:
+  global:
+    dnsService: "dns-default"
+    dnsNamespace: "openshift-dns"
+```
+
+A complete config can be found here: [example-openshift](example-openshift.yaml)
