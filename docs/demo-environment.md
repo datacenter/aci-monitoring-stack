@@ -31,10 +31,13 @@ The stack is pre-provisioned with the following Dashboards. Feel free to explore
   - [Nodes Interfaces](#nodes-interfaces)
   - [Power Usage](#power-usage)
   - [Routing Protocols](#routing-protocols)
-  - [Vlans](#vlans)
 - [Loki backed Dashboards](#loki-backed-dashboards)
   - [Contract Drops Logs](#contract-drops-logs)
-
+- [Config Export Dashboards](#config-export-dashboards)
+  - [Contract Explorer](#contract-explorer)
+  - [Fabric Policies - Port Group](#fabric-policies-port-group)
+  - [Missing Targets](#missing-targets)
+  - [Vlans](#vlans)
 
 ## Prometheus backed Dashboards
 
@@ -116,10 +119,6 @@ This dashboard contains the following graphs:
 - BGP Advertised/Received Paths: For every BGP peering we display the number of paths received/advertised
 - BGP Accepted Paths: Time series graph of **received** BGP prefixes
 
-### Vlans
-
-Display the APIC config for VLAN Pools and VMM Custom Trunk Ports in filterable tables. 
-
 ## Loki backed Dashboards
 
 These dashboards are using `Loki` as data source meaning the data we are visualizing came from an ACI Syslog Message
@@ -127,5 +126,35 @@ These dashboards are using `Loki` as data source meaning the data we are visuali
 ### Contract Drops Logs
 
 This dashboard parses the logs received by the switches and extract infos on the Contract Drop Logs. This requires a specific [config](syslog.md) on ACI and is limited to 500 Messages/s per switch
+
+## Config Export Dashboards
+These dashboard are based on data extracted from ACI Config Snapshot and converted in a Graph Database.
+
+### Contract Explorer
+
+This dashboard allows the user to select a contract and will display how a contract is deployed and what EPG/ESGs are providing or consuming it.
+
+<img src=images/contract-explorer.png width="1200">
+
+### Fabric Policies - Port Group
+
+This dashboard displays detailed information about a port group allowing the user to understand the mappings of:
+
+- VLANs
+- Domains
+- AAEP
+- Leaves and ports 
+
+<img src=images/port-group.png width="1200">
+
+### Missing Targets
+
+Detects and Show missing targets. This is still a bit of a work in progress and should be improved a bit!
+![alt text](images/missing-targets.png)
+
+### Vlans
+
+Display the APIC config for VLAN Pools and VMM Custom Trunk Ports in filterable tables. 
+![alt text](images/vlans.png)
 
 [Next - Lab1](labs/lab1.md)
