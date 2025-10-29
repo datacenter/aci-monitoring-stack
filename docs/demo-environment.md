@@ -2,7 +2,7 @@
 
 The Demo environment is hosted in a DMZ and ca be accessed with the following credentials:
 
-https://64.104.255.11/
+[https://64.104.255.11:8443/](https://64.104.251.186:8443/)
 
 user: `guest`
 password: `guest`
